@@ -1,3 +1,5 @@
+using Microsoft.EntityFrameworkCore;
+using WhatToStreamBacked.Models;
 using WhatToStreamBacked.Services;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -5,6 +7,9 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 
 builder.Services.AddControllers();
+
+builder.Services.AddDbContext<StreamsDb>(opt => opt.UseSqlServer(builder.Configuration.GetConnectionString("StreamsDb")));
+
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();

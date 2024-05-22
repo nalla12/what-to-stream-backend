@@ -1,6 +1,6 @@
 using Newtonsoft.Json;
 
-namespace WhatToStreamBacked.Models;
+namespace WhatToStreamBackend.Models;
 
 public class Genre
 {

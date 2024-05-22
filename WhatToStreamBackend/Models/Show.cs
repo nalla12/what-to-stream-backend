@@ -1,4 +1,4 @@
-namespace WhatToStreamBacked.Models;
+namespace WhatToStreamBackend.Models;
 
 public class Show
 {

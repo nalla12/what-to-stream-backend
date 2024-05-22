@@ -1,6 +1,6 @@
 using Microsoft.EntityFrameworkCore;
-using WhatToStreamBacked.Models;
-using WhatToStreamBacked.Services;
+using WhatToStreamBackend.Models;
+using WhatToStreamBackend.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 

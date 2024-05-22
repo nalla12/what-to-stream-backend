@@ -1,6 +1,6 @@
-using WhatToStreamBacked.Models;
+using WhatToStreamBackend.Models;
 
-namespace WhatToStreamBacked.Services;
+namespace WhatToStreamBackend.Services;
 
 public interface IStreamingAvailabilityService
 {

@@ -1,7 +1,7 @@
 using System.Text.Json;
-using WhatToStreamBacked.Models;
+using WhatToStreamBackend.Models;
 
-namespace WhatToStreamBacked.Services;
+namespace WhatToStreamBackend.Services;
 
 public class StreamingAvailabilityService : IStreamingAvailabilityService
 {

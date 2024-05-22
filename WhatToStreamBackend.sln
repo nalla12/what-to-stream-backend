@@ -1,6 +1,6 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WhatToStreamBacked", "WhatToStreamBacked\WhatToStreamBacked.csproj", "{A70DB0CD-9802-44C8-B9E2-EFB6BD7E1B59}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WhatToStreamBackend", "WhatToStreamBackend\WhatToStreamBackend.csproj", "{A70DB0CD-9802-44C8-B9E2-EFB6BD7E1B59}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

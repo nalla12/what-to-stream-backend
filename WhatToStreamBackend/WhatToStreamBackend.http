@@ -1,0 +1,6 @@
+@WhatToStreamBackend_HostAddress = http://localhost:5243
+
+GET {{WhatToStreamBackend_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###

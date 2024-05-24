@@ -19,6 +19,8 @@
 
     <ItemGroup>
       <Folder Include="Controllers\" />
+      <Folder Include="Models\Db\" />
+      <Folder Include="Models\StreamingAvailabilityAPI\" />
     </ItemGroup>
 
 </Project>

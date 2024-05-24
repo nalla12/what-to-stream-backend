@@ -1,3 +1,4 @@
+using System.ComponentModel.DataAnnotations;
 using System.Runtime.Serialization;
 using Newtonsoft.Json;
 
@@ -8,15 +9,19 @@ public class StreamingOption
     [JsonProperty(PropertyName = "service")]
     public ServiceInfo Service { get; set; }
 
+    [MaxLength(255)]
     [JsonProperty(PropertyName = "type")]
     public string? Type { get; set; }
 
+    [MaxLength(2000)]
     [JsonProperty(PropertyName = "link")]
     public string? Link { get; set; }
 
+    [MaxLength(2000)]
     [JsonProperty(PropertyName = "videoLink")]
     public string? VideoLink { get; set; }
 
+    [MaxLength(255)]
     [JsonProperty(PropertyName = "quality")]
     public string? Quality { get; set; }
 

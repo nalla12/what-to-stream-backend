@@ -21,7 +21,7 @@ public class StreamingAvailabilityService : IStreamingAvailabilityService
         string? cursor
     )
     {
-        // The GET request response, note that the query is inserted directly into the URL (? starts a query)
+        // The GET request response
         var res = await _http.GetAsync(
             $"shows/search/filters?country={countryCode}"
             );
@@ -31,10 +31,6 @@ public class StreamingAvailabilityService : IStreamingAvailabilityService
         using var resStream = await res.Content.ReadAsStreamAsync();
         var resObject = await JsonSerializer.DeserializeAsync<ShowsResult>(resStream);
 
-        return resObject.Shows.Select(show => new Show()
-        {
-            Title = show.Title,
-            Genres = show.Genres
-        });
+        return resObject.Shows;
     }
 }

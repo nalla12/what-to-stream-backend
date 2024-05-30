@@ -26,6 +26,9 @@ public class Show
     public string? OriginalTitle { get; set; }
     
     public List<Genre>? Genres { get; set; }
+    
+    public ICollection<ShowGenre> ShowGenres { get; set; } = new List<ShowGenre>();
+    
     // public List<string>? Directors { get; set; }
     // public List<string>? Creators { get; set; }
     // public List<string>? Cast { get; set; }

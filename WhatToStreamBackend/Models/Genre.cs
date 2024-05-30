@@ -13,4 +13,6 @@ public class Genre
     [MaxLength(255)]
     [JsonProperty(PropertyName = "name")]
     public string? Name { get; set; }
+    
+    public ICollection<ShowGenre> ShowGenres { get; } = new List<ShowGenre>();
 }

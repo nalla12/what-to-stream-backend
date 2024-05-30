@@ -6,6 +6,8 @@ namespace WhatToStreamBackend.Models;
 // URLs for the images
 public class HorizontalImage
 {
+    [Key] public int Id { get; set; }
+    
     [MaxLength(2000)]
     [JsonProperty(PropertyName = "w360")]
     public string? W360 { get; set; }

@@ -6,6 +6,8 @@ namespace WhatToStreamBackend.Models;
 // URLs for the images
 public class ServiceImageSet
 {
+    [Key] public int Id { get; set; }
+    
     [MaxLength(2000)]
     [JsonProperty(PropertyName = "lightThemeImage")]
     public string? LightThemeImage { get; set; }

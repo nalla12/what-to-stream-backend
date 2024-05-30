@@ -6,6 +6,8 @@ namespace WhatToStreamBackend.Models;
 // URLs for the images
 public class VerticalImage
 {
+    [Key] public int Id { get; set; }
+    
     [MaxLength(2000)]
     [JsonProperty(PropertyName = "w240")]
     public string? W240 { get; set; }

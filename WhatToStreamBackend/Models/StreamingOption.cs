@@ -6,6 +6,8 @@ namespace WhatToStreamBackend.Models;
 
 public class StreamingOption
 {
+    [Key] public int Id { get; set; }
+    
     [JsonProperty(PropertyName = "service")]
     public ServiceInfo Service { get; set; }
 

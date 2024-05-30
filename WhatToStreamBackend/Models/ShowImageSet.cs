@@ -1,9 +1,12 @@
+using System.ComponentModel.DataAnnotations;
 using Newtonsoft.Json;
 
 namespace WhatToStreamBackend.Models;
 
 public class ShowImageSet
 {
+    [Key] public int Id { get; set; }
+
     [JsonProperty(PropertyName = "verticalPoster")]
     public VerticalImage? VerticalPoster { get; set; }
     [JsonProperty(PropertyName = "horizontalPoster")]

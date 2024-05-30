@@ -5,6 +5,7 @@ namespace WhatToStreamBackend.Models;
 
 public class ServiceInfo
 {
+    [Key]
     [MaxLength(255)]
     [JsonProperty(PropertyName = "id")]
     public string? Id { get; set; }

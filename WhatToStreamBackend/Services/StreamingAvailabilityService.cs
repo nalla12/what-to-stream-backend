@@ -1,5 +1,5 @@
 using System.Text.Json;
-using WhatToStreamBackend.Models;
+using WhatToStreamBackend.StreamingAvailabilityAPIModels;
 
 namespace WhatToStreamBackend.Services;
 
@@ -29,7 +29,7 @@ public class StreamingAvailabilityService : IStreamingAvailabilityService
 
         // Deserialize the response body, ShowsResult Model created to handle the response
         using var resStream = await res.Content.ReadAsStreamAsync();
-        var resObject = await JsonSerializer.DeserializeAsync<ShowsResult>(resStream);
+        var resObject = await JsonSerializer.DeserializeAsync<ShowsByFiltersResult>(resStream);
 
         return resObject.Shows;
     }

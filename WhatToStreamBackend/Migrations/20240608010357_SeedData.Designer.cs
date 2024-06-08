@@ -12,8 +12,8 @@ using WhatToStreamBackend.Models;
 namespace WhatToStreamBackend.Migrations
 {
     [DbContext(typeof(ShowsDbContext))]
-    [Migration("20240530172259_AddShowGenres")]
-    partial class AddShowGenres
+    [Migration("20240608010357_SeedData")]
+    partial class SeedData
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -25,6 +25,53 @@ namespace WhatToStreamBackend.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
+            modelBuilder.Entity("WhatToStreamBackend.Models.Country", b =>
+                {
+                    b.Property<string>("CountryCode")
+                        .HasMaxLength(2)
+                        .HasColumnType("nvarchar(2)");
+
+                    b.Property<string>("Name")
+                        .HasMaxLength(255)
+                        .HasColumnType("nvarchar(255)");
+
+                    b.HasKey("CountryCode");
+
+                    b.ToTable("Countries");
+
+                    b.HasData(
+                        new
+                        {
+                            CountryCode = "dk",
+                            Name = "Denmark"
+                        },
+                        new
+                        {
+                            CountryCode = "gb",
+                            Name = "United Kingdom"
+                        },
+                        new
+                        {
+                            CountryCode = "us",
+                            Name = "United States"
+                        },
+                        new
+                        {
+                            CountryCode = "jp",
+                            Name = "Japan"
+                        },
+                        new
+                        {
+                            CountryCode = "kr",
+                            Name = "South Korea"
+                        },
+                        new
+                        {
+                            CountryCode = "se",
+                            Name = "Sweden"
+                        });
+                });
+
             modelBuilder.Entity("WhatToStreamBackend.Models.Genre", b =>
                 {
                     b.Property<string>("Id")
@@ -35,14 +82,9 @@ namespace WhatToStreamBackend.Migrations
                         .HasMaxLength(255)
                         .HasColumnType("nvarchar(255)");
 
-                    b.Property<string>("ShowId")
-                        .HasColumnType("nvarchar(50)");
-
                     b.HasKey("Id");
 
-                    b.HasIndex("ShowId");
-
-                    b.ToTable("Genre");
+                    b.ToTable("Genres");
 
                     b.HasData(
                         new
@@ -236,6 +278,36 @@ namespace WhatToStreamBackend.Migrations
                     b.HasIndex("ImageSetId");
 
                     b.ToTable("ServiceInfos");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = "apple",
+                            HomePage = "https://tv.apple.com",
+                            Name = "Apple TV",
+                            ThemeColorCode = "#000000"
+                        },
+                        new
+                        {
+                            Id = "netflix",
+                            HomePage = "https://netflix.com",
+                            Name = "Netflix",
+                            ThemeColorCode = "#E50914"
+                        },
+                        new
+                        {
+                            Id = "prime",
+                            HomePage = "https://www.primevideo.com/",
+                            Name = "Prime Video",
+                            ThemeColorCode = "#00A8E1"
+                        },
+                        new
+                        {
+                            Id = "disney",
+                            HomePage = "https://www.disneyplus.com/",
+                            Name = "Disney+",
+                            ThemeColorCode = "#01137c"
+                        });
                 });
 
             modelBuilder.Entity("WhatToStreamBackend.Models.Show", b =>
@@ -291,9 +363,6 @@ namespace WhatToStreamBackend.Migrations
                         .HasMaxLength(50)
                         .HasColumnType("nvarchar(50)");
 
-                    b.Property<int?>("StreamingOptionsId")
-                        .HasColumnType("int");
-
                     b.Property<string>("Title")
                         .HasMaxLength(400)
                         .HasColumnType("nvarchar(400)");
@@ -305,8 +374,6 @@ namespace WhatToStreamBackend.Migrations
                     b.HasKey("Id");
 
                     b.HasIndex("ImageSetId");
-
-                    b.HasIndex("StreamingOptionsId");
 
                     b.ToTable("Shows");
 
@@ -323,6 +390,22 @@ namespace WhatToStreamBackend.Migrations
                             ShowType = "movie",
                             Title = "The Shawshank Redemption",
                             TmdbId = "movie/278"
+                        },
+                        new
+                        {
+                            Id = "968",
+                            EpisodeCount = 12,
+                            FirstAirYear = 2022,
+                            ImdbId = "tt14169960",
+                            ItemType = "show",
+                            LastAirYear = 2022,
+                            OriginalTitle = "지금 우리 학교는",
+                            Overview = "A high school becomes ground zero for a zombie virus outbreak. Trapped students must fight their way out — or turn into one of the rabid infected.",
+                            Rating = 76,
+                            SeasonCount = 2,
+                            ShowType = "series",
+                            Title = "All of Us Are Dead",
+                            TmdbId = "tv/99966"
                         });
                 });
 
@@ -342,13 +425,28 @@ namespace WhatToStreamBackend.Migrations
 
                     b.HasIndex("GenreId");
 
-                    b.ToTable("ShowGenre");
+                    b.ToTable("ShowGenres");
 
                     b.HasData(
                         new
                         {
                             ShowId = "66",
                             GenreId = "drama"
+                        },
+                        new
+                        {
+                            ShowId = "968",
+                            GenreId = "drama"
+                        },
+                        new
+                        {
+                            ShowId = "968",
+                            GenreId = "action"
+                        },
+                        new
+                        {
+                            ShowId = "968",
+                            GenreId = "fantasy"
                         });
                 });
 
@@ -388,10 +486,23 @@ namespace WhatToStreamBackend.Migrations
             modelBuilder.Entity("WhatToStreamBackend.Models.StreamingOption", b =>
                 {
                     b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
+                        .HasColumnType("int")
+                        .HasColumnOrder(0);
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+                    b.Property<string>("ShowId")
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)")
+                        .HasColumnOrder(1);
+
+                    b.Property<string>("ServiceId")
+                        .HasMaxLength(255)
+                        .HasColumnType("nvarchar(255)")
+                        .HasColumnOrder(2);
+
+                    b.Property<string>("CountryCode")
+                        .HasMaxLength(2)
+                        .HasColumnType("nvarchar(2)")
+                        .HasColumnOrder(3);
 
                     b.Property<int?>("AvailableSince")
                         .HasColumnType("int");
@@ -410,10 +521,6 @@ namespace WhatToStreamBackend.Migrations
                         .HasMaxLength(255)
                         .HasColumnType("nvarchar(255)");
 
-                    b.Property<string>("ServiceId")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(255)");
-
                     b.Property<string>("Type")
                         .HasMaxLength(255)
                         .HasColumnType("nvarchar(255)");
@@ -422,11 +529,52 @@ namespace WhatToStreamBackend.Migrations
                         .HasMaxLength(2000)
                         .HasColumnType("nvarchar(2000)");
 
-                    b.HasKey("Id");
+                    b.HasKey("Id", "ShowId", "ServiceId", "CountryCode");
+
+                    b.HasIndex("CountryCode");
 
                     b.HasIndex("ServiceId");
 
+                    b.HasIndex("ShowId");
+
                     b.ToTable("StreamingOptions");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 0,
+                            ShowId = "66",
+                            ServiceId = "netflix",
+                            CountryCode = "dk"
+                        },
+                        new
+                        {
+                            Id = 0,
+                            ShowId = "66",
+                            ServiceId = "netflix",
+                            CountryCode = "us"
+                        },
+                        new
+                        {
+                            Id = 0,
+                            ShowId = "66",
+                            ServiceId = "disney",
+                            CountryCode = "us"
+                        },
+                        new
+                        {
+                            Id = 0,
+                            ShowId = "968",
+                            ServiceId = "netflix",
+                            CountryCode = "dk"
+                        },
+                        new
+                        {
+                            Id = 0,
+                            ShowId = "968",
+                            ServiceId = "netflix",
+                            CountryCode = "us"
+                        });
                 });
 
             modelBuilder.Entity("WhatToStreamBackend.Models.VerticalImage", b =>
@@ -462,13 +610,6 @@ namespace WhatToStreamBackend.Migrations
                     b.ToTable("VerticalImages");
                 });
 
-            modelBuilder.Entity("WhatToStreamBackend.Models.Genre", b =>
-                {
-                    b.HasOne("WhatToStreamBackend.Models.Show", null)
-                        .WithMany("Genres")
-                        .HasForeignKey("ShowId");
-                });
-
             modelBuilder.Entity("WhatToStreamBackend.Models.ServiceInfo", b =>
                 {
                     b.HasOne("WhatToStreamBackend.Models.ServiceImageSet", "ImageSet")
@@ -484,13 +625,7 @@ namespace WhatToStreamBackend.Migrations
                         .WithMany()
                         .HasForeignKey("ImageSetId");
 
-                    b.HasOne("WhatToStreamBackend.Models.StreamingOption", "StreamingOptions")
-                        .WithMany()
-                        .HasForeignKey("StreamingOptionsId");
-
                     b.Navigation("ImageSet");
-
-                    b.Navigation("StreamingOptions");
                 });
 
             modelBuilder.Entity("WhatToStreamBackend.Models.ShowGenre", b =>
@@ -541,13 +676,34 @@ namespace WhatToStreamBackend.Migrations
 
             modelBuilder.Entity("WhatToStreamBackend.Models.StreamingOption", b =>
                 {
-                    b.HasOne("WhatToStreamBackend.Models.ServiceInfo", "Service")
-                        .WithMany()
+                    b.HasOne("WhatToStreamBackend.Models.Country", "Country")
+                        .WithMany("StreamingOptions")
+                        .HasForeignKey("CountryCode")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("WhatToStreamBackend.Models.ServiceInfo", "StreamingService")
+                        .WithMany("StreamingOptions")
                         .HasForeignKey("ServiceId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("Service");
+                    b.HasOne("WhatToStreamBackend.Models.Show", "Show")
+                        .WithMany("StreamingOptions")
+                        .HasForeignKey("ShowId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Country");
+
+                    b.Navigation("Show");
+
+                    b.Navigation("StreamingService");
+                });
+
+            modelBuilder.Entity("WhatToStreamBackend.Models.Country", b =>
+                {
+                    b.Navigation("StreamingOptions");
                 });
 
             modelBuilder.Entity("WhatToStreamBackend.Models.Genre", b =>
@@ -555,11 +711,16 @@ namespace WhatToStreamBackend.Migrations
                     b.Navigation("ShowGenres");
                 });
 
+            modelBuilder.Entity("WhatToStreamBackend.Models.ServiceInfo", b =>
+                {
+                    b.Navigation("StreamingOptions");
+                });
+
             modelBuilder.Entity("WhatToStreamBackend.Models.Show", b =>
                 {
-                    b.Navigation("Genres");
-
                     b.Navigation("ShowGenres");
+
+                    b.Navigation("StreamingOptions");
                 });
 #pragma warning restore 612, 618
         }

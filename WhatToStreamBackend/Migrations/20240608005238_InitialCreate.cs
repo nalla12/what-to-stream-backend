@@ -7,11 +7,35 @@
 namespace WhatToStreamBackend.Migrations
 {
     /// <inheritdoc />
-    public partial class First : Migration
+    public partial class InitialCreate : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
+            migrationBuilder.CreateTable(
+                name: "Countries",
+                columns: table => new
+                {
+                    CountryCode = table.Column<string>(type: "nvarchar(2)", maxLength: 2, nullable: false),
+                    Name = table.Column<string>(type: "nvarchar(255)", maxLength: 255, nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Countries", x => x.CountryCode);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Genres",
+                columns: table => new
+                {
+                    Id = table.Column<string>(type: "nvarchar(255)", maxLength: 255, nullable: false),
+                    Name = table.Column<string>(type: "nvarchar(255)", maxLength: 255, nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Genres", x => x.Id);
+                });
+
             migrationBuilder.CreateTable(
                 name: "HorizontalImages",
                 columns: table => new
@@ -118,32 +142,6 @@ namespace WhatToStreamBackend.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "StreamingOptions",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    ServiceId = table.Column<string>(type: "nvarchar(255)", nullable: false),
-                    Type = table.Column<string>(type: "nvarchar(255)", maxLength: 255, nullable: true),
-                    Link = table.Column<string>(type: "nvarchar(2000)", maxLength: 2000, nullable: true),
-                    VideoLink = table.Column<string>(type: "nvarchar(2000)", maxLength: 2000, nullable: true),
-                    Quality = table.Column<string>(type: "nvarchar(255)", maxLength: 255, nullable: true),
-                    ExpiresSoon = table.Column<bool>(type: "bit", nullable: true),
-                    ExpiresOn = table.Column<int>(type: "int", nullable: true),
-                    AvailableSince = table.Column<int>(type: "int", nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_StreamingOptions", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_StreamingOptions_ServiceInfos_ServiceId",
-                        column: x => x.ServiceId,
-                        principalTable: "ServiceInfos",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
                 name: "Shows",
                 columns: table => new
                 {
@@ -163,8 +161,7 @@ namespace WhatToStreamBackend.Migrations
                     Maximum = table.Column<int>(type: "int", nullable: true),
                     SeasonCount = table.Column<int>(type: "int", nullable: true),
                     EpisodeCount = table.Column<int>(type: "int", nullable: true),
-                    ImageSetId = table.Column<int>(type: "int", nullable: true),
-                    StreamingOptionsId = table.Column<int>(type: "int", nullable: true)
+                    ImageSetId = table.Column<int>(type: "int", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -174,73 +171,142 @@ namespace WhatToStreamBackend.Migrations
                         column: x => x.ImageSetId,
                         principalTable: "ShowImageSets",
                         principalColumn: "Id");
-                    table.ForeignKey(
-                        name: "FK_Shows_StreamingOptions_StreamingOptionsId",
-                        column: x => x.StreamingOptionsId,
-                        principalTable: "StreamingOptions",
-                        principalColumn: "Id");
                 });
 
             migrationBuilder.CreateTable(
-                name: "Genres",
+                name: "ShowGenres",
                 columns: table => new
                 {
-                    Id = table.Column<string>(type: "nvarchar(255)", maxLength: 255, nullable: false),
-                    Name = table.Column<string>(type: "nvarchar(255)", maxLength: 255, nullable: true),
-                    ShowId = table.Column<string>(type: "nvarchar(50)", nullable: true)
+                    ShowId = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
+                    GenreId = table.Column<string>(type: "nvarchar(255)", maxLength: 255, nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Genres", x => x.Id);
+                    table.PrimaryKey("PK_ShowGenres", x => new { x.ShowId, x.GenreId });
                     table.ForeignKey(
-                        name: "FK_Genres_Shows_ShowId",
+                        name: "FK_ShowGenres_Genres_GenreId",
+                        column: x => x.GenreId,
+                        principalTable: "Genres",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_ShowGenres_Shows_ShowId",
                         column: x => x.ShowId,
                         principalTable: "Shows",
-                        principalColumn: "Id");
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "StreamingOptions",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false),
+                    ShowId = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
+                    ServiceId = table.Column<string>(type: "nvarchar(255)", maxLength: 255, nullable: false),
+                    CountryCode = table.Column<string>(type: "nvarchar(2)", maxLength: 2, nullable: false),
+                    Type = table.Column<string>(type: "nvarchar(255)", maxLength: 255, nullable: true),
+                    Link = table.Column<string>(type: "nvarchar(2000)", maxLength: 2000, nullable: true),
+                    VideoLink = table.Column<string>(type: "nvarchar(2000)", maxLength: 2000, nullable: true),
+                    Quality = table.Column<string>(type: "nvarchar(255)", maxLength: 255, nullable: true),
+                    ExpiresSoon = table.Column<bool>(type: "bit", nullable: true),
+                    ExpiresOn = table.Column<int>(type: "int", nullable: true),
+                    AvailableSince = table.Column<int>(type: "int", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_StreamingOptions", x => new { x.Id, x.ShowId, x.ServiceId, x.CountryCode });
+                    table.ForeignKey(
+                        name: "FK_StreamingOptions_Countries_CountryCode",
+                        column: x => x.CountryCode,
+                        principalTable: "Countries",
+                        principalColumn: "CountryCode",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_StreamingOptions_ServiceInfos_ServiceId",
+                        column: x => x.ServiceId,
+                        principalTable: "ServiceInfos",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_StreamingOptions_Shows_ShowId",
+                        column: x => x.ShowId,
+                        principalTable: "Shows",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.InsertData(
+                table: "Countries",
+                columns: new[] { "CountryCode", "Name" },
+                values: new object[,]
+                {
+                    { "dk", "Denmark" },
+                    { "gb", "United Kingdom" },
+                    { "jp", "Japan" },
+                    { "kr", "South Korea" },
+                    { "se", "Sweden" },
+                    { "us", "United States" }
                 });
 
             migrationBuilder.InsertData(
                 table: "Genres",
-                columns: new[] { "Id", "Name", "ShowId" },
+                columns: new[] { "Id", "Name" },
                 values: new object[,]
                 {
-                    { "action", "Action", null },
-                    { "adventure", "Adventure", null },
-                    { "animation", "Animation", null },
-                    { "comedy", "Comedy", null },
-                    { "crime", "Crime", null },
-                    { "documentary", "Documentary", null },
-                    { "drama", "Drama", null },
-                    { "family", "Family", null },
-                    { "fantasy", "Fantasy", null },
-                    { "history", "History", null },
-                    { "horror", "Horror", null },
-                    { "music", "Music", null },
-                    { "mystery", "Mystery", null },
-                    { "news", "News", null },
-                    { "reality", "Reality", null },
-                    { "romance", "Romance", null },
-                    { "scifi", "Science Fiction", null },
-                    { "talk", "Talk Show", null },
-                    { "thriller", "Thriller", null },
-                    { "war", "War", null },
-                    { "western", "Western", null }
+                    { "action", "Action" },
+                    { "adventure", "Adventure" },
+                    { "animation", "Animation" },
+                    { "comedy", "Comedy" },
+                    { "crime", "Crime" },
+                    { "documentary", "Documentary" },
+                    { "drama", "Drama" },
+                    { "family", "Family" },
+                    { "fantasy", "Fantasy" },
+                    { "history", "History" },
+                    { "horror", "Horror" },
+                    { "music", "Music" },
+                    { "mystery", "Mystery" },
+                    { "news", "News" },
+                    { "reality", "Reality" },
+                    { "romance", "Romance" },
+                    { "scifi", "Science Fiction" },
+                    { "talk", "Talk Show" },
+                    { "thriller", "Thriller" },
+                    { "war", "War" },
+                    { "western", "Western" }
+                });
+
+            migrationBuilder.InsertData(
+                table: "ServiceInfos",
+                columns: new[] { "Id", "HomePage", "ImageSetId", "Name", "ThemeColorCode" },
+                values: new object[,]
+                {
+                    { "apple", "https://tv.apple.com", null, "Apple TV", "#000000" },
+                    { "disney", "https://www.disneyplus.com/", null, "Disney+", "#01137c" },
+                    { "netflix", "https://netflix.com", null, "Netflix", "#E50914" },
+                    { "prime", "https://www.primevideo.com/", null, "Prime Video", "#00A8E1" }
                 });
 
             migrationBuilder.InsertData(
                 table: "Shows",
-                columns: new[] { "Id", "EpisodeCount", "FirstAirYear", "ImageSetId", "ImdbId", "ItemType", "LastAirYear", "Maximum", "Minimum", "OriginalTitle", "Overview", "Rating", "ReleaseYear", "SeasonCount", "ShowType", "StreamingOptionsId", "Title", "TmdbId" },
-                values: new object[] { "66", null, null, null, "tt0111161", "show", null, null, null, "The Shawshank Redemption", "Red (Morgan Freeman) and Andy (Tim Robbins), both incarcerated at Shawshank prison, forge an unlikely bond that will span more than twenty years. Together they discover hope as the ultimate means of survival, in a poignant tale of the human spirit.", 90, 1994, null, "movie", null, "The Shawshank Redemption", "movie/278" });
+                columns: new[] { "Id", "EpisodeCount", "FirstAirYear", "ImageSetId", "ImdbId", "ItemType", "LastAirYear", "Maximum", "Minimum", "OriginalTitle", "Overview", "Rating", "ReleaseYear", "SeasonCount", "ShowType", "Title", "TmdbId" },
+                values: new object[] { "66", null, null, null, "tt0111161", "show", null, null, null, "The Shawshank Redemption", "Red (Morgan Freeman) and Andy (Tim Robbins), both incarcerated at Shawshank prison, forge an unlikely bond that will span more than twenty years. Together they discover hope as the ultimate means of survival, in a poignant tale of the human spirit.", 90, 1994, null, "movie", "The Shawshank Redemption", "movie/278" });
 
-            migrationBuilder.CreateIndex(
-                name: "IX_Genres_ShowId",
-                table: "Genres",
-                column: "ShowId");
+            migrationBuilder.InsertData(
+                table: "ShowGenres",
+                columns: new[] { "GenreId", "ShowId" },
+                values: new object[] { "drama", "66" });
 
             migrationBuilder.CreateIndex(
                 name: "IX_ServiceInfos_ImageSetId",
                 table: "ServiceInfos",
                 column: "ImageSetId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_ShowGenres_GenreId",
+                table: "ShowGenres",
+                column: "GenreId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_ShowImageSets_HorizontalBackdropId",
@@ -268,42 +334,53 @@ namespace WhatToStreamBackend.Migrations
                 column: "ImageSetId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Shows_StreamingOptionsId",
-                table: "Shows",
-                column: "StreamingOptionsId");
+                name: "IX_StreamingOptions_CountryCode",
+                table: "StreamingOptions",
+                column: "CountryCode");
 
             migrationBuilder.CreateIndex(
                 name: "IX_StreamingOptions_ServiceId",
                 table: "StreamingOptions",
                 column: "ServiceId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_StreamingOptions_ShowId",
+                table: "StreamingOptions",
+                column: "ShowId");
         }
 
         /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
+                name: "ShowGenres");
+
+            migrationBuilder.DropTable(
+                name: "StreamingOptions");
+
+            migrationBuilder.DropTable(
                 name: "Genres");
+
+            migrationBuilder.DropTable(
+                name: "Countries");
+
+            migrationBuilder.DropTable(
+                name: "ServiceInfos");
 
             migrationBuilder.DropTable(
                 name: "Shows");
 
             migrationBuilder.DropTable(
-                name: "ShowImageSets");
+                name: "ServiceImageSets");
 
             migrationBuilder.DropTable(
-                name: "StreamingOptions");
+                name: "ShowImageSets");
 
             migrationBuilder.DropTable(
                 name: "HorizontalImages");
 
             migrationBuilder.DropTable(
                 name: "VerticalImages");
-
-            migrationBuilder.DropTable(
-                name: "ServiceInfos");
-
-            migrationBuilder.DropTable(
-                name: "ServiceImageSets");
         }
     }
 }

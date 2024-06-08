@@ -5,7 +5,7 @@ namespace WhatToStreamBackend.Models;
 
 public class ServiceInfo
 {
-    [Key]
+    [Key, Required]
     [MaxLength(255)]
     [JsonProperty(PropertyName = "id")]
     public string? Id { get; set; }
@@ -24,4 +24,6 @@ public class ServiceInfo
 
     [JsonProperty(PropertyName = "imageSet")]
     public ServiceImageSet? ImageSet { get; set; }
+    
+    public ICollection<StreamingOption> StreamingOptions { get; set; } = new List<StreamingOption>();
 }

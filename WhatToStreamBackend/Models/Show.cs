@@ -24,19 +24,13 @@ public class Show
     public int? LastAirYear { get; set; }
     [MaxLength(400)]
     public string? OriginalTitle { get; set; }
-    
-    public List<Genre>? Genres { get; set; }
-    
     public ICollection<ShowGenre> ShowGenres { get; set; } = new List<ShowGenre>();
     
-    // public List<string>? Directors { get; set; }
-    // public List<string>? Creators { get; set; }
-    // public List<string>? Cast { get; set; }
     public int? Rating { get; set; }
     public int? Minimum { get; set; }
     public int? Maximum { get; set; }
     public int? SeasonCount { get; set; }
     public int? EpisodeCount { get; set; }
     public ShowImageSet? ImageSet { get; set; }
-    public StreamingOption? StreamingOptions { get; set; }
+    public ICollection<StreamingOption> StreamingOptions { get; set; } = new List<StreamingOption>();
 }

@@ -30,5 +30,5 @@ public class Show
     public int? SeasonCount { get; set; }
     public int? EpisodeCount { get; set; }
     public ShowImageSet? ImageSet { get; set; }
-    public StreamingOption? StreamingOptions { get; set; }
+    public Dictionary<string, StreamingOption[]>? StreamingOptions { get; set; }
 }

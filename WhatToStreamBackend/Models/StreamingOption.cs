@@ -52,8 +52,8 @@ public class StreamingOption
     public bool? ExpiresSoon { get; set; }
 
     [JsonProperty(PropertyName = "expiresOn")]
-    public int? ExpiresOn { get; set; }
+    public long? ExpiresOn { get; set; }
 
     [JsonProperty(PropertyName = "availableSince")]
-    public int? AvailableSince { get; set; }
+    public long? AvailableSince { get; set; }
 }

@@ -5,7 +5,7 @@ namespace WhatToStreamBackend.StreamingAvailabilityAPIModels;
 public class StreamingOption
 {
     [JsonProperty(PropertyName = "service")]
-    public ServiceInfo Service { get; set; }
+    public ServiceInfo? Service { get; set; }
 
     [JsonProperty(PropertyName = "type")]
     public string? Type { get; set; }

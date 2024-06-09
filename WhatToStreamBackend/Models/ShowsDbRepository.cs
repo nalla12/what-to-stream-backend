@@ -11,6 +11,7 @@ public class ShowsDbRepository : IShowsDbRepository
     
     public List<Show> GetAllShows()
     {
+        // TODO: LINQ join show, genre, and streamingOptions tables
         return _db.Shows.ToList();
     }
 
@@ -31,9 +32,9 @@ public class ShowsDbRepository : IShowsDbRepository
         return newShow;
     }
 
-    public Show UpdateShow(Show updatedShow)
+    public void UpdateShow(Show updatedShow)
     {
-        Show showInDb = _db.Shows.Find(updatedShow.Id);
+        Show? showInDb = _db.Shows.Find(updatedShow.Id);
 
         if (showInDb != null)
         {
@@ -41,8 +42,29 @@ public class ShowsDbRepository : IShowsDbRepository
             _db.Shows.Update(showInDb);
             _db.SaveChanges();
         }
+        
+        /*
+         _context.Entry(show).State = EntityState.Modified;
 
-        return showInDb;
+           try
+           {
+               await _context.SaveChangesAsync();
+           }
+           catch (DbUpdateConcurrencyException)
+           {
+               if (!ShowExists(id))
+               {
+                   return NotFound();
+               }
+               else
+               {
+                   throw;
+               }
+           }
+
+           return NoContent();
+         * 
+         */
     }
 
     public void DeleteShow(Show showToDelete)

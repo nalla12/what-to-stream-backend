@@ -24,7 +24,7 @@ public class Show
     public int? LastAirYear { get; set; }
     [MaxLength(400)]
     public string? OriginalTitle { get; set; }
-    public ICollection<ShowGenre> ShowGenres { get; set; } = new List<ShowGenre>();
+    public ICollection<ShowGenre>? ShowGenres { get; set; } = new List<ShowGenre>();
     
     public int? Rating { get; set; }
     public int? Minimum { get; set; }
@@ -32,5 +32,5 @@ public class Show
     public int? SeasonCount { get; set; }
     public int? EpisodeCount { get; set; }
     public ShowImageSet? ImageSet { get; set; }
-    public ICollection<StreamingOption> StreamingOptions { get; set; } = new List<StreamingOption>();
+    public ICollection<StreamingOption>? StreamingOptions { get; set; } = new List<StreamingOption>();
 }

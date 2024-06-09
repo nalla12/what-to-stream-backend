@@ -3,15 +3,20 @@ namespace WhatToStreamBackend.Models;
 public class ShowsDbRepository : IShowsDbRepository
 {
     private readonly ShowsDbContext _db;
+
+    public ShowsDbRepository(ShowsDbContext db)
+    {
+        _db = db;
+    }
     
     public List<Show> GetAllShows()
     {
-        throw new NotImplementedException();
+        return _db.Shows.ToList();
     }
 
     public Show? GetShowById(string id)
     {
-        throw new NotImplementedException();
+        return _db.Shows.Find(id);
     }
 
     public Show? GetShowByTitle(string title)
@@ -21,16 +26,28 @@ public class ShowsDbRepository : IShowsDbRepository
 
     public Show CreateShow(Show newShow)
     {
-        throw new NotImplementedException();
+        _db.Shows.Add(newShow);
+        _db.SaveChanges();
+        return newShow;
     }
 
     public Show UpdateShow(Show updatedShow)
     {
-        throw new NotImplementedException();
+        Show showInDb = _db.Shows.Find(updatedShow.Id);
+
+        if (showInDb != null)
+        {
+            showInDb.Title = updatedShow.Title;
+            _db.Shows.Update(showInDb);
+            _db.SaveChanges();
+        }
+
+        return showInDb;
     }
 
-    public void DeleteShow(Show poorShow)
+    public void DeleteShow(Show showToDelete)
     {
-        throw new NotImplementedException();
+        _db.Shows.Remove(showToDelete);
+        _db.SaveChanges();
     }
 }

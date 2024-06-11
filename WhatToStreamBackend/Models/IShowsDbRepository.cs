@@ -2,10 +2,11 @@ namespace WhatToStreamBackend.Models;
 
 public interface IShowsDbRepository
 {
-    List<Show> GetAllShows(); // Get 
-    Show? GetShowById(string id); // Get
-    Show? GetShowByTitle(string title); // Get
-    Show CreateShow(Show newShow); // Post
-    void UpdateShow(Show updatedShow); // Put or Patch
-    void DeleteShow(Show poorShow); // Delete 
+    Task<IEnumerable<Show>> GetAllShowsAsync(); 
+    Task<Show?> GetShowByIdAsync(string id);
+    Task<IEnumerable<Show>> GetShowsByTitle(string title);
+    Task<IEnumerable<Show>> GetShowsByGenre(string genre);
+    Task<Show> CreateShowAsync(Show show);
+    Task UpdateShowAsync(Show show);
+    Task DeleteShowAsync(string id); 
 }

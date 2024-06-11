@@ -4,9 +4,9 @@ namespace WhatToStreamBackend.Models;
 
 public class Show
 {
-    [Key]
+    [Key, Required]
     [MaxLength(50)]
-    public string? Id { get; set; }
+    public string Id { get; set; }
     [MaxLength(50)]
     public string? ItemType { get; set; }
     [MaxLength(50)]
@@ -24,7 +24,7 @@ public class Show
     public int? LastAirYear { get; set; }
     [MaxLength(400)]
     public string? OriginalTitle { get; set; }
-    public ICollection<ShowGenre>? ShowGenres { get; set; } = new List<ShowGenre>();
+    public ICollection<ShowGenre> ShowGenres { get; set; } = new List<ShowGenre>();
     
     public int? Rating { get; set; }
     public int? Minimum { get; set; }

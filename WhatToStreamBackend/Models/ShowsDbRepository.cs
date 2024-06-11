@@ -1,3 +1,7 @@
+using Microsoft.EntityFrameworkCore;
+using System.Collections.Generic;
+using System.Linq;
+
 namespace WhatToStreamBackend.Models;
 
 public class ShowsDbRepository : IShowsDbRepository
@@ -8,68 +12,62 @@ public class ShowsDbRepository : IShowsDbRepository
     {
         _db = db;
     }
-    
-    public List<Show> GetAllShows()
+
+    public async Task<IEnumerable<Show>> GetAllShowsAsync()
     {
         // TODO: LINQ join show, genre, and streamingOptions tables
-        return _db.Shows.ToList();
+        return await _db.Shows
+            .Include(s => s.ShowGenres)
+            .ThenInclude(sg => sg.Genre)
+            .ToListAsync();
     }
 
-    public Show? GetShowById(string id)
+    public async Task<Show?> GetShowByIdAsync(string id)
     {
-        return _db.Shows.Find(id);
+        return await _db.Shows
+            .Include(s => s.ShowGenres)
+            .ThenInclude(sg => sg.Genre)
+            .FirstOrDefaultAsync(s => s.Id == id);
     }
 
-    public Show? GetShowByTitle(string title)
+    public async Task<IEnumerable<Show>> GetShowsByTitle(string title)
     {
-        throw new NotImplementedException();
+        return await _db.Shows
+            .Include(s => s.ShowGenres)
+            .ThenInclude(sg => sg.Genre)
+            .Where(s => s.Title == title)
+            .ToListAsync();
     }
 
-    public Show CreateShow(Show newShow)
+    public async Task<IEnumerable<Show>> GetShowsByGenre(string genre)
     {
-        _db.Shows.Add(newShow);
-        _db.SaveChanges();
-        return newShow;
+        return await _db.Shows
+            .Include(s => s.ShowGenres)
+            .ThenInclude(sg => sg.Genre)
+            .Where(s => s.ShowGenres.Any(sg => sg.Genre.Name == genre))
+            .ToListAsync();
     }
 
-    public void UpdateShow(Show updatedShow)
+    public async Task<Show> CreateShowAsync(Show show)
     {
-        Show? showInDb = _db.Shows.Find(updatedShow.Id);
+        _db.Shows.Add(show);
+        await _db.SaveChangesAsync();
+        return show;
+    }
 
-        if (showInDb != null)
+    public async Task UpdateShowAsync(Show show)
+    {
+        _db.Entry(show).State = EntityState.Modified;
+        await _db.SaveChangesAsync();
+    }
+
+    public async Task DeleteShowAsync(string id)
+    {
+        var show = await _db.Shows.FindAsync(id);
+        if (show != null)
         {
-            showInDb.Title = updatedShow.Title;
-            _db.Shows.Update(showInDb);
-            _db.SaveChanges();
+            _db.Shows.Remove(show);
+            await _db.SaveChangesAsync();
         }
-        
-        /*
-         _context.Entry(show).State = EntityState.Modified;
-
-           try
-           {
-               await _context.SaveChangesAsync();
-           }
-           catch (DbUpdateConcurrencyException)
-           {
-               if (!ShowExists(id))
-               {
-                   return NotFound();
-               }
-               else
-               {
-                   throw;
-               }
-           }
-
-           return NoContent();
-         * 
-         */
-    }
-
-    public void DeleteShow(Show showToDelete)
-    {
-        _db.Shows.Remove(showToDelete);
-        _db.SaveChanges();
     }
 }

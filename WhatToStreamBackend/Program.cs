@@ -1,4 +1,5 @@
 using Microsoft.EntityFrameworkCore;
+using Newtonsoft.Json;
 using WhatToStreamBackend.Models;
 using WhatToStreamBackend.Services;
 
@@ -6,7 +7,11 @@ var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 
-builder.Services.AddControllers();
+builder.Services.AddControllers().AddNewtonsoftJson(
+    options => {
+        options.SerializerSettings.ReferenceLoopHandling = ReferenceLoopHandling.Ignore; 
+    }
+);
 
 builder.Services.AddDbContext<ShowsDbContext>(
 opt => opt.UseSqlServer(builder.Configuration.GetConnectionString("ShowsDb"))

@@ -13,7 +13,7 @@ namespace WhatToStreamBackend.Controllers
     [ApiController]
     public class ShowsController : ControllerBase
     {
-        private IShowsDbRepository _showsDbRepository;
+        private readonly IShowsDbRepository _showsDbRepository;
 
         public ShowsController(IShowsDbRepository showsDbRepository)
         {
@@ -22,78 +22,56 @@ namespace WhatToStreamBackend.Controllers
 
         // GET: api/Shows
         [HttpGet]
-        public ActionResult<IEnumerable<Show>> GetAllShows()
+        public async Task<ActionResult<IEnumerable<Show>>> GetAllShows()
         {
-            return _showsDbRepository.GetAllShows();
+            var shows = await _showsDbRepository.GetAllShowsAsync();
+            return Ok(shows);
         }
 
         // GET: api/Shows/5
         [HttpGet("{id}")]
-        public ActionResult<Show> GetShow(string id)
+        public async Task<ActionResult<Show>> GetShowById(string id)
         {
-            var show = _showsDbRepository.GetShowById(id);
-
+            var show = await _showsDbRepository.GetShowByIdAsync(id);
             if (show == null)
             {
-                return NotFound();
+                return NotFound($"Show with Id: {id} does not exist.");
             }
 
-            return show;
-        }
-
-        // PUT: api/Shows/5
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
-        [HttpPut("{id}")]
-        public IActionResult UpdateShow(Show show)
-        {
-            var showInRepo = _showsDbRepository.GetShowById(show.Id);
-
-            if (showInRepo != null)
-            {
-                _showsDbRepository.UpdateShow(show);
-                return Ok();
-            }
-
-            return NotFound($"Show with Id: {show.Id} does not exist.");
-        }
-
-        // DELETE: api/Shows/5
-        [HttpDelete("{id}")]
-        public IActionResult DeleteShow(string id)
-        {
-            var showInRepo = _showsDbRepository.GetShowById(id);
-            
-            if (showInRepo != null)
-            {
-                
-                _showsDbRepository.DeleteShow(showInRepo);
-                return Ok();
-            }
-
-            return NotFound($"Show with Id: {id} does not exist.");
+            return Ok(show);
         }
         
         // POST: api/Shows
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
-        public ActionResult<Show> CreateShow(Show show)
+        public async Task<ActionResult<Show?>> CreateShow(Show show)
         {
-            // TODO: not efficient. Maybe try to insert and check Db conflict error
-            if (_showsDbRepository.GetAllShows().Any(s => s.Id == show.Id))
+            try
             {
-                return Conflict($"A show with ID {show.Id} already exist.");
+                await _showsDbRepository.CreateShowAsync(show);
+                return CreatedAtAction(nameof(GetShowById), new { id = show.Id }, show);
             }
-            return _showsDbRepository.CreateShow(show);
-            
-            /*try
+            catch (DbUpdateException ex) when (ex.InnerException?.Message.Contains("duplicate key") == true)
             {
-                _showsDbRepository.CreateShow(show);
+                // Return a 409 Conflict response if the show ID already exists
+                return Conflict(new { message = $"A show with ID {show.Id} already exists." });
             }
-            catch (DbUpdateException)
+        }
+
+        // PUT: api/Shows/5
+        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
+        [HttpPut("{id}")]
+        public async Task<IActionResult> UpdateShow(Show show)
+        {
+            try
             {
-                if (ShowExists(show.Id))
+                await _showsDbRepository.UpdateShowAsync(show);
+            }
+            catch (DbUpdateConcurrencyException)
+            {
+                if (await ShowExists(show.Id) == false)
                 {
-                    return Conflict();
+                    return NotFound($"Show with Id: {show.Id} does not exist.");
                 }
                 else
                 {
@@ -101,13 +79,26 @@ namespace WhatToStreamBackend.Controllers
                 }
             }
 
-            return CreatedAtAction("GetShow", new { id = show.Id }, show);*/
+            return Ok();
         }
 
-        // TODO: delete this?
-        private bool ShowExists(string id)
+        // DELETE: api/Shows/5
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> DeleteShow(string id)
         {
-            return _showsDbRepository.GetAllShows().Any(e => e.Id == id);
+            var showInRepo = await _showsDbRepository.GetShowByIdAsync(id);
+            if (showInRepo == null)
+            {
+                return NotFound($"Show with Id: {id} does not exist.");
+            }
+            
+            await _showsDbRepository.DeleteShowAsync(id);
+            return Ok();
+        }
+
+        private async Task<bool> ShowExists(string id)
+        {
+            return await _showsDbRepository.GetShowByIdAsync(id) != null;
         }
     }
 }

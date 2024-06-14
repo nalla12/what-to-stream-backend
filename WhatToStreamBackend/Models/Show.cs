@@ -32,5 +32,5 @@ public class Show
     public int? SeasonCount { get; set; }
     public int? EpisodeCount { get; set; }
     public ShowImageSet? ImageSet { get; set; }
-    public ICollection<StreamingOption>? StreamingOptions { get; set; } = new List<StreamingOption>();
+    public ICollection<StreamingOption> StreamingOptions { get; set; } = new List<StreamingOption>();
 }

@@ -1,40 +1,38 @@
 using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
 using System.Linq;
+using Microsoft.EntityFrameworkCore.Query;
 
 namespace WhatToStreamBackend.Models;
 
 public class ShowsDbRepository : IShowsDbRepository
 {
     private readonly ShowsDbContext _db;
+    private IIncludableQueryable<Show, ServiceInfo> _completeShows;
 
     public ShowsDbRepository(ShowsDbContext db)
     {
         _db = db;
+        _completeShows = _db.Shows
+            .Include(s => s.ShowGenres)
+                .ThenInclude(sg => sg.Genre)
+            .Include(s => s.StreamingOptions)
+                .ThenInclude(so => so.StreamingService);
     }
 
     public async Task<IEnumerable<Show>> GetAllShowsAsync()
     {
-        // TODO: LINQ join show, genre, and streamingOptions tables
-        return await _db.Shows
-            .Include(s => s.ShowGenres)
-            .ThenInclude(sg => sg.Genre)
-            .ToListAsync();
+        return await _completeShows.ToListAsync();
     }
 
     public async Task<Show?> GetShowByIdAsync(string id)
     {
-        return await _db.Shows
-            .Include(s => s.ShowGenres)
-            .ThenInclude(sg => sg.Genre)
-            .FirstOrDefaultAsync(s => s.Id == id);
+        return await _completeShows.FirstOrDefaultAsync(s => s.Id == id);
     }
 
     public async Task<IEnumerable<Show>> GetShowsByTitle(string title)
     {
-        return await _db.Shows
-            .Include(s => s.ShowGenres)
-            .ThenInclude(sg => sg.Genre)
+        return await _completeShows
             .Where(s => s.Title == title)
             .ToListAsync();
     }
@@ -43,7 +41,7 @@ public class ShowsDbRepository : IShowsDbRepository
     {
         return await _db.Shows
             .Include(s => s.ShowGenres)
-            .ThenInclude(sg => sg.Genre)
+                .ThenInclude(sg => sg.Genre)
             .Where(s => s.ShowGenres.Any(sg => sg.Genre.Name == genre))
             .ToListAsync();
     }
@@ -55,6 +53,7 @@ public class ShowsDbRepository : IShowsDbRepository
         return show;
     }
 
+    // TODO: make it possible to update only the supplied properties and not make them null
     public async Task UpdateShowAsync(Show show)
     {
         _db.Entry(show).State = EntityState.Modified;

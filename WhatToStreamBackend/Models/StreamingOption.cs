@@ -9,25 +9,28 @@ public class StreamingOption
     [Key, Column(Order = 0)]
     public int Id { get; set; }
     
-    [Key, Column(Order = 1)]
+    [JsonIgnore]
+    [Key, Required, Column(Order = 1)]
     [MaxLength(50)]
-    public string? ShowId { get; set; }
+    public string ShowId { get; set; }
 
+    [JsonIgnore]
     [ForeignKey("ShowId")]
-    public Show? Show { get; set; }
+    public Show Show { get; set; }
     
-    [Key, Column(Order = 2)]
+    [Key, Required, Column(Order = 2)]
     [MaxLength(255)]
-    public string? ServiceId { get; set; }
+    public string ServiceId { get; set; }
 
     [JsonProperty(PropertyName = "streamingService")]
     [ForeignKey("ServiceId")]
-    public ServiceInfo? StreamingService { get; set; }
+    public ServiceInfo StreamingService { get; set; }
     
-    [Key, Column(Order = 3)]
+    [Key, Required, Column(Order = 3)]
     [MaxLength(2)]
-    public string? CountryCode { get; set; }
+    public string CountryCode { get; set; }
 
+    [JsonIgnore]
     [ForeignKey("CountryCode")]
     [MaxLength(50)]
     public Country? Country { get; set; }

@@ -14,5 +14,6 @@ public class Genre
     [JsonProperty(PropertyName = "name")]
     public string? Name { get; set; }
     
+    [JsonIgnore]
     public ICollection<ShowGenre> ShowGenres { get; } = new List<ShowGenre>();
 }

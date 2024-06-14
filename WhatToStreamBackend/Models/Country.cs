@@ -1,4 +1,5 @@
 using System.ComponentModel.DataAnnotations;
+using Newtonsoft.Json;
 
 namespace WhatToStreamBackend.Models;
 
@@ -10,5 +11,6 @@ public class Country
     [MaxLength(255)]
     public string? Name { get; set; }
     
+    [JsonIgnore]
     public ICollection<StreamingOption> StreamingOptions { get; set; } = new List<StreamingOption>();
 }

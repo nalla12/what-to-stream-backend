@@ -10,6 +10,7 @@ public class ServiceInfo
     [JsonProperty(PropertyName = "id")]
     public string? Id { get; set; }
     
+    [Required]
     [MaxLength(2000)]
     [JsonProperty(PropertyName = "name")]
     public string? Name { get; set; }
@@ -25,5 +26,6 @@ public class ServiceInfo
     [JsonProperty(PropertyName = "imageSet")]
     public ServiceImageSet? ImageSet { get; set; }
     
+    [JsonIgnore]
     public ICollection<StreamingOption> StreamingOptions { get; set; } = new List<StreamingOption>();
 }

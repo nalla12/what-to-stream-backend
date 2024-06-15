@@ -1,4 +1,4 @@
-namespace WhatToStreamBackend.StreamingAvailabilityAPIModels;
+namespace WhatToStreamBackend.Models.StreamingAvailabilityAPI;
 
 public class ShowsByFiltersResultExternal
 {

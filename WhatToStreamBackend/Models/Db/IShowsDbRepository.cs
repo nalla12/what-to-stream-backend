@@ -1,4 +1,4 @@
-namespace WhatToStreamBackend.Models;
+namespace WhatToStreamBackend.Models.Db;
 
 public interface IShowsDbRepository
 {

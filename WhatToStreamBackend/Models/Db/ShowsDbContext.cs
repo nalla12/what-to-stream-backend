@@ -1,6 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 
-namespace WhatToStreamBackend.Models;
+namespace WhatToStreamBackend.Models.Db;
 
 public class ShowsDbContext : DbContext
 {

@@ -1,7 +1,7 @@
 using System.ComponentModel.DataAnnotations;
 using Newtonsoft.Json;
 
-namespace WhatToStreamBackend.Models;
+namespace WhatToStreamBackend.Models.Db;
 
 public class Genre
 {

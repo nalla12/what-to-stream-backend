@@ -1,22 +1,18 @@
-using System.ComponentModel.DataAnnotations;
 using Newtonsoft.Json;
 
-namespace WhatToStreamBackend.Models;
+namespace WhatToStreamBackend.Models.StreamingAvailabilityAPI;
 
 // URLs for the images
-public class ServiceImageSet
+public class ServiceImageSetExternal
 {
-    [Key] public int Id { get; set; }
+    public int Id { get; set; }
     
-    [MaxLength(2000)]
     [JsonProperty(PropertyName = "lightThemeImage")]
     public string? LightThemeImage { get; set; }
 
-    [MaxLength(2000)]
     [JsonProperty(PropertyName = "darkThemeImage")]
     public string? DarkThemeImage { get; set; }
 
-    [MaxLength(2000)]
     [JsonProperty(PropertyName = "whiteImage")]
     public string? WhiteImage { get; set; }
 }

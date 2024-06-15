@@ -1,9 +1,7 @@
 using Microsoft.EntityFrameworkCore;
-using System.Collections.Generic;
-using System.Linq;
 using Microsoft.EntityFrameworkCore.Query;
 
-namespace WhatToStreamBackend.Models;
+namespace WhatToStreamBackend.Models.Db;
 
 public class ShowsDbRepository : IShowsDbRepository
 {

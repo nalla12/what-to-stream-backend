@@ -1,4 +1,4 @@
-using WhatToStreamBackend.StreamingAvailabilityAPIModels;
+using WhatToStreamBackend.Models.StreamingAvailabilityAPI;
 
 namespace WhatToStreamBackend.Services;
 

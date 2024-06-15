@@ -1,6 +1,6 @@
 using System.Text.Json;
 using System.Web;
-using WhatToStreamBackend.StreamingAvailabilityAPIModels;
+using WhatToStreamBackend.Models.StreamingAvailabilityAPI;
 
 namespace WhatToStreamBackend.Services;
 

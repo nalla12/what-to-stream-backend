@@ -1,6 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 
-namespace WhatToStreamBackend.Models;
+namespace WhatToStreamBackend.Models.Db;
 
 public class Show
 {

@@ -1,6 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
+using WhatToStreamBackend.Models.StreamingAvailabilityAPI;
 using WhatToStreamBackend.Services;
-using WhatToStreamBackend.StreamingAvailabilityAPIModels;
 
 namespace WhatToStreamBackend.Controllers;
 

@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using WhatToStreamBackend.Models;
+using WhatToStreamBackend.Models.Db;
 
 namespace WhatToStreamBackend.Controllers
 {

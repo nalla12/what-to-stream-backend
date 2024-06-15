@@ -1,7 +1,6 @@
-using System.ComponentModel.DataAnnotations;
 using Newtonsoft.Json;
 
-namespace WhatToStreamBackend.StreamingAvailabilityAPIModels;
+namespace WhatToStreamBackend.Models.StreamingAvailabilityAPI;
 
 public class GenreExternal
 {

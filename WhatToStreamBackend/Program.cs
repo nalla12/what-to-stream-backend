@@ -1,6 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
-using WhatToStreamBackend.Models;
+using WhatToStreamBackend.Models.Db;
 using WhatToStreamBackend.Services;
 
 var builder = WebApplication.CreateBuilder(args);

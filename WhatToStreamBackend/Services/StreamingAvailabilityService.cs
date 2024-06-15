@@ -21,6 +21,7 @@ public class StreamingAvailabilityService : IStreamingAvailabilityService
         string? cursor = null
     )
     {
+        // Construct query string
         var query = HttpUtility.ParseQueryString(string.Empty);
         if (!string.IsNullOrEmpty(countryCode))
             query["country"] = countryCode;

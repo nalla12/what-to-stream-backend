@@ -2,10 +2,10 @@ using Newtonsoft.Json;
 
 namespace WhatToStreamBackend.StreamingAvailabilityAPIModels;
 
-public class StreamingOption
+public class StreamingOptionExternal
 {
     [JsonProperty(PropertyName = "service")]
-    public ServiceInfo? Service { get; set; }
+    public ServiceInfoExternal? Service { get; set; }
 
     [JsonProperty(PropertyName = "type")]
     public string? Type { get; set; }

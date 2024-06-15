@@ -2,7 +2,7 @@ using Newtonsoft.Json;
 
 namespace WhatToStreamBackend.StreamingAvailabilityAPIModels;
 
-public class ServiceInfo
+public class ServiceInfoExternal
 {
     [JsonProperty(PropertyName = "id")]
     public string? Id { get; set; }
@@ -17,5 +17,5 @@ public class ServiceInfo
     public string? ThemeColorCode { get; set; }
 
     [JsonProperty(PropertyName = "imageSet")]
-    public ServiceImageSet? ImageSet { get; set; }
+    public ServiceImageSetExternal? ImageSet { get; set; }
 }

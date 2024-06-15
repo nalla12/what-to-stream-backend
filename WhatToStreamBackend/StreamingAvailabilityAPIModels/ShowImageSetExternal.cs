@@ -2,14 +2,14 @@ using Newtonsoft.Json;
 
 namespace WhatToStreamBackend.StreamingAvailabilityAPIModels;
 
-public class ShowImageSet
+public class ShowImageSetExternal
 {
     [JsonProperty(PropertyName = "verticalPoster")]
-    public VerticalImage? VerticalPoster { get; set; }
+    public VerticalImageExternal? VerticalPoster { get; set; }
     [JsonProperty(PropertyName = "horizontalPoster")]
-    public HorizontalImage? HorizontalPoster { get; set; }
+    public HorizontalImageExternal? HorizontalPoster { get; set; }
     [JsonProperty(PropertyName = "verticalBackdrop")]
-    public VerticalImage? VerticalBackdrop { get; set; }
+    public VerticalImageExternal? VerticalBackdrop { get; set; }
     [JsonProperty(PropertyName = "horizontalBackdrop")]
-    public HorizontalImage? HorizontalBackdrop { get; set; }
+    public HorizontalImageExternal? HorizontalBackdrop { get; set; }
 }

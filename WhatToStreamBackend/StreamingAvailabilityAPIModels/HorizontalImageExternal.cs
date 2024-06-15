@@ -3,7 +3,7 @@ using Newtonsoft.Json;
 namespace WhatToStreamBackend.StreamingAvailabilityAPIModels;
 
 // URLs for the images
-public class HorizontalImage
+public class HorizontalImageExternal
 {
     public int Id { get; set; }
     

@@ -3,7 +3,7 @@ using Newtonsoft.Json;
 namespace WhatToStreamBackend.StreamingAvailabilityAPIModels;
 
 // URLs for the images
-public class ServiceImageSet
+public class ServiceImageSetExternal
 {
     public int Id { get; set; }
     

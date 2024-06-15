@@ -3,7 +3,7 @@ using Newtonsoft.Json;
 
 namespace WhatToStreamBackend.StreamingAvailabilityAPIModels;
 
-public class Genre
+public class GenreExternal
 {
     [JsonProperty(PropertyName = "id")]
     public string? Id { get; set; }

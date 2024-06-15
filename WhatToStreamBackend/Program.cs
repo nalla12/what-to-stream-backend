@@ -19,16 +19,17 @@ opt => opt.UseSqlServer(builder.Configuration.GetConnectionString("ShowsDb"))
 
 builder.Services.AddScoped<IShowsDbRepository, ShowsDbRepository>();
 
-// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
-builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
-
 // HttpClient to be consumed by the actual API Service
 builder.Services.AddHttpClient<IStreamingAvailabilityService, StreamingAvailabilityService>(client => {
     client.BaseAddress = new Uri("https://streaming-availability.p.rapidapi.com/");
     client.DefaultRequestHeaders.Add("X-RapidAPI-Host", "streaming-availability.p.rapidapi.com");
-    client.DefaultRequestHeaders.Add("X-RapidAPI-Key", "key"); // TODO: add key
+    // TODO: add key to appsettings
+    client.DefaultRequestHeaders.Add("X-RapidAPI-Key", "d93a557296mshb9ca7af3a795686p19a102jsn52e4cd558573"); 
 });
+
+// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
+builder.Services.AddEndpointsApiExplorer();
+builder.Services.AddSwaggerGen();
 
 var app = builder.Build();
 

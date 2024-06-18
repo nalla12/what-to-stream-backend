@@ -11,20 +11,13 @@ namespace WhatToStreamBackend.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class ShowsController : ControllerBase
+    public class ShowsController(IShowsDbRepository showsDbRepository) : ControllerBase
     {
-        private readonly IShowsDbRepository _showsDbRepository;
-
-        public ShowsController(IShowsDbRepository showsDbRepository)
-        {
-            _showsDbRepository = showsDbRepository;
-        }
-
         // GET: api/Shows
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Show>>> GetAllShows()
         {
-            var shows = await _showsDbRepository.GetAllShowsAsync();
+            var shows = await showsDbRepository.GetAllShowsAsync();
             return Ok(shows);
         }
 
@@ -32,7 +25,7 @@ namespace WhatToStreamBackend.Controllers
         [HttpGet("{id}")]
         public async Task<ActionResult<Show>> GetShowById(string id)
         {
-            var show = await _showsDbRepository.GetShowByIdAsync(id);
+            var show = await showsDbRepository.GetShowByIdAsync(id);
             if (show == null)
             {
                 return NotFound($"Show with Id: {id} does not exist.");
@@ -48,7 +41,7 @@ namespace WhatToStreamBackend.Controllers
         {
             try
             {
-                await _showsDbRepository.CreateShowAsync(show);
+                await showsDbRepository.CreateShowAsync(show);
                 return CreatedAtAction(nameof(GetShowById), new { id = show.Id }, show);
             }
             catch (DbUpdateException ex) when (ex.InnerException?.Message.Contains("duplicate key") == true)
@@ -65,7 +58,7 @@ namespace WhatToStreamBackend.Controllers
         {
             try
             {
-                await _showsDbRepository.UpdateShowAsync(show);
+                await showsDbRepository.UpdateShowAsync(show);
             }
             catch (DbUpdateConcurrencyException)
             {
@@ -86,19 +79,19 @@ namespace WhatToStreamBackend.Controllers
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteShow(string id)
         {
-            var showInRepo = await _showsDbRepository.GetShowByIdAsync(id);
+            var showInRepo = await showsDbRepository.GetShowByIdAsync(id);
             if (showInRepo == null)
             {
                 return NotFound($"Show with Id: {id} does not exist.");
             }
             
-            await _showsDbRepository.DeleteShowAsync(id);
+            await showsDbRepository.DeleteShowAsync(id);
             return Ok();
         }
 
         private async Task<bool> ShowExists(string id)
         {
-            return await _showsDbRepository.GetShowByIdAsync(id) != null;
+            return await showsDbRepository.GetShowByIdAsync(id) != null;
         }
     }
 }

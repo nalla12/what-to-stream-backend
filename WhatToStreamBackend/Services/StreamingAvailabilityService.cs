@@ -4,14 +4,8 @@ using WhatToStreamBackend.Models.StreamingAvailabilityAPI;
 
 namespace WhatToStreamBackend.Services;
 
-public class StreamingAvailabilityService : IStreamingAvailabilityService
+public class StreamingAvailabilityService(HttpClient http) : IStreamingAvailabilityService
 {
-    private readonly HttpClient _http;
-    public StreamingAvailabilityService(HttpClient http)
-    {
-        _http = http;
-    }
-
     public async Task<ShowsByFiltersResultExternal> GetShowsByFilters(
         string? countryCode = null,
         string? showType = null,
@@ -42,7 +36,7 @@ public class StreamingAvailabilityService : IStreamingAvailabilityService
             query["cursor"] = cursor;
         
         // The GET request response
-        var res = await _http.GetAsync(
+        var res = await http.GetAsync(
             $"shows/search/filters?{query}");
         res.EnsureSuccessStatusCode();
 

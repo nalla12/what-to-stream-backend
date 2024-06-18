@@ -1,18 +1,25 @@
 using System.ComponentModel.DataAnnotations;
+using System.Text.Json.Serialization;
 using Newtonsoft.Json;
 
 namespace WhatToStreamBackend.Models.Db;
 
 public class ShowImageSet
 {
-    [Key] public int Id { get; set; }
+    [Key]
+    [JsonPropertyName("id")]
+    public int Id { get; set; }
 
-    [JsonProperty(PropertyName = "verticalPoster")]
+    [JsonPropertyName("verticalPoster")]
     public VerticalImage? VerticalPoster { get; set; }
-    [JsonProperty(PropertyName = "horizontalPoster")]
+    
+    [JsonPropertyName("horizontalPoster")]
     public HorizontalImage? HorizontalPoster { get; set; }
-    [JsonProperty(PropertyName = "verticalBackdrop")]
+    
+    [JsonPropertyName("verticalBackdrop")]
     public VerticalImage? VerticalBackdrop { get; set; }
-    [JsonProperty(PropertyName = "horizontalBackdrop")]
+    
+    [JsonPropertyName("horizontalBackdrop")]
     public HorizontalImage? HorizontalBackdrop { get; set; }
+    
 }

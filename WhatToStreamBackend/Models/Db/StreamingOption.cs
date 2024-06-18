@@ -1,6 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using Newtonsoft.Json;
+using System.Text.Json.Serialization;
 
 namespace WhatToStreamBackend.Models.Db;
 
@@ -9,12 +9,12 @@ public class StreamingOption
     [Key, Column(Order = 0)]
     public int Id { get; set; }
     
-    [JsonIgnore]
+    [Newtonsoft.Json.JsonIgnore]
     [Key, Required, Column(Order = 1)]
     [MaxLength(50)]
     public string ShowId { get; set; }
 
-    [JsonIgnore]
+    [Newtonsoft.Json.JsonIgnore]
     [ForeignKey("ShowId")]
     public Show Show { get; set; }
     
@@ -22,7 +22,7 @@ public class StreamingOption
     [MaxLength(255)]
     public string ServiceId { get; set; }
 
-    [JsonProperty(PropertyName = "streamingService")]
+    [JsonPropertyName("streamingService")]
     [ForeignKey("ServiceId")]
     public ServiceInfo StreamingService { get; set; }
     
@@ -30,33 +30,33 @@ public class StreamingOption
     [MaxLength(2)]
     public string CountryCode { get; set; }
 
-    [JsonIgnore]
+    [Newtonsoft.Json.JsonIgnore]
     [ForeignKey("CountryCode")]
     [MaxLength(50)]
     public Country? Country { get; set; }
 
     [MaxLength(255)]
-    [JsonProperty(PropertyName = "type")]
+    [JsonPropertyName("type")]
     public string? Type { get; set; }
 
     [MaxLength(2000)]
-    [JsonProperty(PropertyName = "link")]
+    [JsonPropertyName("link")]
     public string? Link { get; set; }
 
     [MaxLength(2000)]
-    [JsonProperty(PropertyName = "videoLink")]
+    [JsonPropertyName("videoLink")]
     public string? VideoLink { get; set; }
 
     [MaxLength(255)]
-    [JsonProperty(PropertyName = "quality")]
+    [JsonPropertyName("quality")]
     public string? Quality { get; set; }
 
-    [JsonProperty(PropertyName = "expiresSoon")]
+    [JsonPropertyName("expiresSoon")]
     public bool? ExpiresSoon { get; set; }
 
-    [JsonProperty(PropertyName = "expiresOn")]
+    [JsonPropertyName("expiresOn")]
     public long? ExpiresOn { get; set; }
 
-    [JsonProperty(PropertyName = "availableSince")]
+    [JsonPropertyName("availableSince")]
     public long? AvailableSince { get; set; }
 }

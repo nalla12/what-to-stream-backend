@@ -1,8 +1,15 @@
+using System.Text.Json.Serialization;
+
 namespace WhatToStreamBackend.Models.StreamingAvailabilityAPI;
 
 public class ShowsByFiltersResultExternal
 {
-    public ShowExternal[] shows { get; set; } = [];
-    public bool? hasMore { get; set; }
-    public string? nextCursor { get; set; }
+    [JsonPropertyName("shows")]
+    public ShowExternal[] Shows { get; set; } = [];
+    
+    [JsonPropertyName("hasMore")]
+    public bool? HasMore { get; set; }
+    
+    [JsonPropertyName("nextCursor")]
+    public string? NextCursor { get; set; }
 }

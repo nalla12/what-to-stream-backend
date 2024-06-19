@@ -1,3 +1,4 @@
+using System.Collections.Specialized;
 using System.Text.Json;
 using System.Web;
 using WhatToStreamBackend.Models.StreamingAvailabilityAPI;
@@ -6,7 +7,7 @@ namespace WhatToStreamBackend.Services;
 
 public class StreamingAvailabilityService(HttpClient http) : IStreamingAvailabilityService
 {
-    public async Task<ShowsByFiltersResultExternal> GetShowsByFilters(
+    public async Task<ShowsByFiltersResult?> GetShowsByFilters(
         string? countryCode = null,
         string? showType = null,
         int? ratingMin = null,
@@ -15,8 +16,10 @@ public class StreamingAvailabilityService(HttpClient http) : IStreamingAvailabil
         string? cursor = null
     )
     {
+        string path = "shows/search/filters";
+        NameValueCollection query = HttpUtility.ParseQueryString(string.Empty);
+
         // Construct query string
-        var query = HttpUtility.ParseQueryString(string.Empty);
         if (!string.IsNullOrEmpty(countryCode))
             query["country"] = countryCode;
 
@@ -36,14 +39,19 @@ public class StreamingAvailabilityService(HttpClient http) : IStreamingAvailabil
             query["cursor"] = cursor;
         
         // The GET request response
-        var res = await http.GetAsync(
-            $"shows/search/filters?{query}");
+        HttpResponseMessage res = await http.GetAsync($"{path}?{query}");
         res.EnsureSuccessStatusCode();
 
         // Deserialize the response body, ShowsResult Model created to handle the response
-        await using var resStream = await res.Content.ReadAsStreamAsync();
-        var resObject = await JsonSerializer.DeserializeAsync<ShowsByFiltersResultExternal>(resStream);
+        await using Stream resStream = await res.Content.ReadAsStreamAsync();
+        
+        ShowsByFiltersResult? showsObject = await JsonSerializer
+            .DeserializeAsync<ShowsByFiltersResult>(resStream);
+        
+        ShowsByFiltersGenres? genresObject = await JsonSerializer
+            .DeserializeAsync<ShowsByFiltersGenres>(resStream);
 
-        return resObject;
+        // TODO: idea: save to class properties and access from a different method 
+        return showsObject;
     }
 }

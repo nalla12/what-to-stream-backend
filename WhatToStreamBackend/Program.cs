@@ -19,7 +19,7 @@ opt => opt.UseSqlServer(builder.Configuration.GetConnectionString("ShowsDb"))
 
 builder.Services.AddScoped<IShowsDbRepository, ShowsDbRepository>();
 
-// HttpClient to be consumed by the actual API Service
+// HttpClient to be consumed by the API Service
 builder.Services.AddHttpClient<IStreamingAvailabilityService, StreamingAvailabilityService>(client => {
     client.BaseAddress = new Uri("https://streaming-availability.p.rapidapi.com/");
     client.DefaultRequestHeaders.Add("X-RapidAPI-Host", "streaming-availability.p.rapidapi.com");

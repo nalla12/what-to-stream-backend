@@ -4,7 +4,7 @@ namespace WhatToStreamBackend.Services;
 
 public interface IStreamingAvailabilityService
 {
-    Task<ShowsByFiltersResultExternal> GetShowsByFilters(
+    Task<ShowsByFiltersResult?> GetShowsByFilters(
         string? countryCode, 
         string? showType, 
         int? ratingMin,

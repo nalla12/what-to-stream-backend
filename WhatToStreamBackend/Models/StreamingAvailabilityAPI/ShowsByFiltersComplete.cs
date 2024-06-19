@@ -1,6 +1,6 @@
 namespace WhatToStreamBackend.Models.StreamingAvailabilityAPI;
 
-public class ShowExternal
+public class ShowsByFiltersComplete
 {
     public string itemType { get; set; }
     public string showType { get; set; }

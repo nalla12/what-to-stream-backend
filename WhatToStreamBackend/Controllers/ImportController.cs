@@ -10,7 +10,7 @@ public class ImportController(IStreamingAvailabilityService streamingAvailabilit
 {
     // Request shows from StreamingAvailability API
     [HttpGet]
-    public async Task<ActionResult<ShowsByFiltersResultExternal>> GetShowsByFilters()
+    public async Task<ActionResult<ShowsByFiltersResult>> GetShowsByFilters()
     {
         var filteredShows = await streamingAvailabilityService.GetShowsByFilters(
             "dk", "movie", 65, null, null, null);

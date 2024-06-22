@@ -22,8 +22,8 @@ public class StreamingOption
     [MaxLength(255)]
     public string ServiceId { get; set; }
 
-    [JsonPropertyName("streamingService")]
     [ForeignKey("ServiceId")]
+    [JsonPropertyName("streamingService")]
     public ServiceInfo StreamingService { get; set; }
     
     [Key, Required, Column(Order = 3)]

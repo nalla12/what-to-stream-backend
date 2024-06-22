@@ -1,6 +1,6 @@
 namespace WhatToStreamBackend.Models.StreamingAvailabilityAPI;
 
-public class ShowsByFiltersComplete
+public class ShowsComplete
 {
     public string itemType { get; set; }
     public string showType { get; set; }
@@ -16,7 +16,7 @@ public class ShowsByFiltersComplete
     public string[] cast { get; set; }
     public int rating { get; set; }
     public ImageSet imageSet { get; set; }
-    public StreamingOptions streamingOptions { get; set; }
+    public Dictionary<string, CountryStreamingOption[]> streamingOptions { get; set; }
 }
 
 public class Genres
@@ -69,12 +69,7 @@ public class HorizontalBackdrop
     public string w1440 { get; set; }
 }
 
-public class StreamingOptions
-{
-    public Dk[] dk { get; set; }
-}
-
-public class Dk
+public class CountryStreamingOption
 {
     public Service service { get; set; }
     public string type { get; set; }

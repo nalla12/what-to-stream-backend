@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
 using WhatToStreamBackend.Models.Db;
@@ -9,7 +10,7 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddControllers().AddNewtonsoftJson(
     options => {
-        options.SerializerSettings.ReferenceLoopHandling = ReferenceLoopHandling.Ignore; 
+        options.SerializerSettings.ReferenceLoopHandling = ReferenceLoopHandling.Ignore;
     }
 );
 

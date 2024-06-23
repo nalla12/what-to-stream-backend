@@ -7,32 +7,35 @@ namespace WhatToStreamBackend.Models.Db;
 public class StreamingOption
 {
     [Key, Column(Order = 0)]
+    [JsonPropertyName("id")]
     public int Id { get; set; }
     
-    [Newtonsoft.Json.JsonIgnore]
-    [Key, Required, Column(Order = 1)]
+    [Key, Column(Order = 1)]
     [MaxLength(50)]
+    [JsonPropertyName("showId")]
     public string ShowId { get; set; }
 
-    [Newtonsoft.Json.JsonIgnore]
     [ForeignKey("ShowId")]
-    public Show Show { get; set; }
+    [Newtonsoft.Json.JsonIgnore]
+    public Show? Show { get; set; }
     
-    [Key, Required, Column(Order = 2)]
+    [Key, Column(Order = 2)]
     [MaxLength(255)]
+    [JsonPropertyName("serviceId")]
     public string ServiceId { get; set; }
 
     [ForeignKey("ServiceId")]
     [JsonPropertyName("streamingService")]
-    public ServiceInfo StreamingService { get; set; }
+    public ServiceInfo? StreamingService { get; set; }
     
-    [Key, Required, Column(Order = 3)]
+    [Key, Column(Order = 3)]
     [MaxLength(2)]
+    [JsonPropertyName("countryCode")]
     public string CountryCode { get; set; }
 
-    [Newtonsoft.Json.JsonIgnore]
     [ForeignKey("CountryCode")]
     [MaxLength(50)]
+    [Newtonsoft.Json.JsonIgnore]
     public Country? Country { get; set; }
 
     [MaxLength(255)]

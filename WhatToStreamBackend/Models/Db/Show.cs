@@ -70,6 +70,6 @@ public class Show
     public ShowImageSet? ImageSet { get; set; }
     
     [JsonPropertyName("streamingOptions")]
-    public ICollection<StreamingOption> StreamingOptions { get; set; } 
+    public ICollection<StreamingOption>? StreamingOptions { get; set; } 
         = new List<StreamingOption>();
 }

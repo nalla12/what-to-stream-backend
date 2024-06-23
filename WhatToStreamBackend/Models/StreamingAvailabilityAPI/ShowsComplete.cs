@@ -76,8 +76,6 @@ public class CountryStreamingOption
     public string link { get; set; }
     public string videoLink { get; set; }
     public string quality { get; set; }
-    public Audios[] audios { get; set; }
-    public Subtitles[] subtitles { get; set; }
     public bool expiresSoon { get; set; }
     public int availableSince { get; set; }
     public Addon addon { get; set; }
@@ -98,17 +96,6 @@ public class ImageSet1
     public string lightThemeImage { get; set; }
     public string darkThemeImage { get; set; }
     public string whiteImage { get; set; }
-}
-
-public class Audios
-{
-    public string language { get; set; }
-}
-
-public class Subtitles
-{
-    public bool closedCaptions { get; set; }
-    public Locale locale { get; set; }
 }
 
 public class Locale

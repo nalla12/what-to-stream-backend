@@ -54,12 +54,6 @@ public class Show
     [JsonPropertyName("rating")]
     public int? Rating { get; set; }
     
-    [JsonPropertyName("minimum")]
-    public int? Minimum { get; set; }
-    
-    [JsonPropertyName("maximum")]
-    public int? Maximum { get; set; }
-    
     [JsonPropertyName("seasonCount")]
     public int? SeasonCount { get; set; }
     

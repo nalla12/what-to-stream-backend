@@ -72,8 +72,6 @@ public class ShowsDbContext : DbContext
                 LastAirYear = null,
                 OriginalTitle = "The Shawshank Redemption",
                 Rating = 90,
-                Minimum = null,
-                Maximum = null,
                 SeasonCount = null,
                 EpisodeCount = null,
                 ImageSet = null,

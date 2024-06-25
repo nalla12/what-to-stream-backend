@@ -1,24 +1,26 @@
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Text.Json.Serialization;
 
 namespace WhatToStreamBackend.Models.Db;
 
 public class ShowGenre
 {
-    [Key, Required, Column(Order = 0)]
+    [Key, Column(Order = 0)]
     [MaxLength(50)]
-    [Newtonsoft.Json.JsonIgnore]
+    [JsonPropertyName("showId")]
     public string ShowId { get; set; }
 
     [ForeignKey("ShowId")]
     [Newtonsoft.Json.JsonIgnore]
-    public Show Show { get; set; }
+    public Show? Show { get; set; }
 
-    [Key, Required, Column(Order = 1)]
+    [Key, Column(Order = 1)]
     [MaxLength(255)]
-    [Newtonsoft.Json.JsonIgnore]
+    [JsonPropertyName("genreId")]
     public string GenreId { get; set; }
 
     [ForeignKey("GenreId")]
-    public Genre Genre { get; set; }
+    [Newtonsoft.Json.JsonIgnore]
+    public Genre? Genre { get; set; }
 }

@@ -51,6 +51,20 @@ public class ShowsDbRepository : IShowsDbRepository
         return show;
     }
 
+    public async Task CreateOrUpdateShowAsync(Show show)
+    {
+        var existingShow = await _db.Shows.FindAsync(show.Id);
+        if (existingShow == null)
+        {
+            _db.Shows.Add(show);
+        }
+        else
+        {
+            _db.Entry(existingShow).CurrentValues.SetValues(show);
+        }
+        await _db.SaveChangesAsync();
+    }
+    
     // TODO: make it possible to update only the supplied properties and not make them null
     public async Task UpdateShowAsync(Show show)
     {

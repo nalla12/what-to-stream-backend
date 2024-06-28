@@ -10,9 +10,9 @@ public class StreamingAvailabilityService(HttpClient http) : IStreamingAvailabil
 {
     public ShowGenre[]? ShowGenres { get; set; }
 
-    public async Task<ShowsByFiltersResult?> GetShowsByFilters(
-        string? countryCode = null,
-        string? showType = null,
+    public async Task<object?> GetShowsByFilters(
+        string countryCode,
+        string showType,
         int? ratingMin = null,
         int? ratingMax = null,
         string? keyword = null,
@@ -45,29 +45,94 @@ public class StreamingAvailabilityService(HttpClient http) : IStreamingAvailabil
         HttpResponseMessage res = await http.GetAsync($"{path}?{query}");
         res.EnsureSuccessStatusCode();
 
-        // Deserialize the response body, ShowsResult Model created to handle the response
+        // Deserialize the response body
         await using Stream resStream = await res.Content.ReadAsStreamAsync();
+        object? resObject;
 
-        ShowsByFiltersResult? resObject = await JsonSerializer
-            .DeserializeAsync<ShowsByFiltersResult>(resStream);
-
-        // Map object to database models
-        this.ShowGenres = resObject?.Shows
-            .SelectMany(s => s.genres.Select(g => new ShowGenre
-            {
-                ShowId = s.id,
-                GenreId = g.id
-            }))
-            .ToArray();
-
-        if (this.ShowGenres != null)
+        if (showType == "movie")
         {
-            foreach (var showGenre in this.ShowGenres)
-            {
-                Console.WriteLine($"ShowId: {showGenre.ShowId}, GenreId: {showGenre.GenreId}");
-            }
+            resObject = await JsonSerializer
+                .DeserializeAsync<ShowsByFiltersResult<ShowsMovie>>(resStream);
+        } 
+        else if (showType == "series")
+        {
+            resObject = await JsonSerializer
+                .DeserializeAsync<ShowsByFiltersResult<ShowsSeries>>(resStream);
+        }
+        else
+        {
+            throw new ArgumentException("Invalid show type");
         }
 
-        return resObject;
+        switch (resObject)
+        {
+            // Map object to database models
+            case ShowsByFiltersResult<ShowsMovie> movieResults:
+            {
+                // Process movieResults
+                Show[]? shows = movieResults.Shows.Select(s => new Show
+                {
+                    Id = s.id,
+                    ItemType = s.itemType,
+                    ShowType = s.showType,
+                    ImdbId = s.imdbId,
+                    TmdbId = s.tmdbId,
+                    Title = s.title,
+                    OriginalTitle = s.originalTitle,
+                    Overview = s.overview,
+                    ReleaseYear = s.releaseYear,
+                    Rating = s.rating,
+                    Runtime = s.runtime,
+                    ImageSet = null,
+                    ShowGenres = null,
+                    StreamingOptions = null
+                }).ToArray();
+        
+                /*this.ShowGenres = movieResults.Shows
+                .SelectMany(s => s.genres.Select(g => new ShowGenre
+                {
+                    ShowId = s.id,
+                    GenreId = g.id
+                }))
+                .ToArray();
+
+            if (this.ShowGenres != null)
+            {
+                foreach (var showGenre in this.ShowGenres)
+                {
+                    Console.WriteLine($"ShowId: {showGenre.ShowId}, GenreId: {showGenre.GenreId}");
+                }
+            }*/
+
+                return shows;
+            }
+            case ShowsByFiltersResult<ShowsSeries> seriesResults:
+            {
+                // Process seriesResults
+                Show[]? shows = seriesResults.Shows.Select(s => new Show
+                {
+                    Id = s.id,
+                    ItemType = s.itemType,
+                    ShowType = s.showType,
+                    ImdbId = s.imdbId,
+                    TmdbId = s.tmdbId,
+                    Title = s.title,
+                    OriginalTitle = s.originalTitle,
+                    Overview = s.overview,
+                    FirstAirYear = s.firstAirYear,
+                    LastAirYear = s.lastAirYear,
+                    Rating = s.rating,
+                    SeasonCount = s.seasonCount,
+                    EpisodeCount = s.episodeCount,
+                    ImageSet = null,
+                    ShowGenres = null,
+                    StreamingOptions = null
+                }).ToArray();
+            
+                return shows;
+            }
+            default:
+                return resObject;
+        }
     }
 }

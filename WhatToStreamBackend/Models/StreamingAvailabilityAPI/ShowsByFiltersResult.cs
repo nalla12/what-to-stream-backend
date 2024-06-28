@@ -2,10 +2,10 @@ using System.Text.Json.Serialization;
 
 namespace WhatToStreamBackend.Models.StreamingAvailabilityAPI;
 
-public class ShowsByFiltersResult
+public class ShowsByFiltersResult<T> where T : ShowObjectFromApi
 {
     [JsonPropertyName("shows")]
-    public ShowsComplete[] Shows { get; set; } = [];
+    public T[] Shows { get; set; } = [];
     
     [JsonPropertyName("hasMore")]
     public bool? HasMore { get; set; }

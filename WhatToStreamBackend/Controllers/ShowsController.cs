@@ -85,6 +85,7 @@ namespace WhatToStreamBackend.Controllers
                 return NotFound($"Show with Id: {id} does not exist.");
             }
             
+            // TODO: also delete related streaming options, genres, images
             await showsDbRepository.DeleteShowAsync(id);
             return Ok();
         }

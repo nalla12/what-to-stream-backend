@@ -10,11 +10,19 @@ public class ImportController(IStreamingAvailabilityService streamingAvailabilit
 {
     // Request shows from StreamingAvailability API
     [HttpGet]
-    public async Task<ActionResult<ShowsByFiltersResult>> GetShowsByFilters()
+    public async Task<ActionResult<object>> GetShowsByFilters()
     {
-        var filteredShows = await streamingAvailabilityService.GetShowsByFilters(
-            "dk", "movie", 65, null, null, null);
+        try
+        {
+            var filteredShows = await streamingAvailabilityService.GetShowsByFilters(
+                "dk", "movie", 70, null, null, null);
 
-        return Ok(filteredShows);
+            return Ok(filteredShows);
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e);
+            throw;
+        }
     }
 }

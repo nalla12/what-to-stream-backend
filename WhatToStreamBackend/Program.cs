@@ -10,24 +10,30 @@ string? authHeaderName = builder.Configuration["StreamingAvailabilityAPI:AuthHea
 string? apiKey = builder.Configuration["StreamingAvailabilityAPI:ApiKey"];
 
 // Add services to the container.
-
-builder.Services.AddControllers().AddNewtonsoftJson(
-    options => {
+builder.Services.AddControllers().AddNewtonsoftJson
+(
+    options =>
+    {
         options.SerializerSettings.ReferenceLoopHandling = ReferenceLoopHandling.Ignore;
     }
 );
 
-builder.Services.AddDbContext<ShowsDbContext>(
-opt => opt.UseSqlServer(builder.Configuration.GetConnectionString("ShowsDb"))
+builder.Services.AddDbContext<ShowsDbContext>
+(
+    opt => opt.UseSqlServer(builder.Configuration.GetConnectionString("ShowsDb"))
 );
 
 builder.Services.AddScoped<IShowsDbRepository, ShowsDbRepository>();
 
 // HttpClient to be consumed by the API Service
-builder.Services.AddHttpClient<IStreamingAvailabilityService, StreamingAvailabilityService>(client => {
-    client.BaseAddress = new Uri(baseUrl);
-    client.DefaultRequestHeaders.Add(authHeaderName, apiKey); 
-});
+builder.Services.AddHttpClient<IStreamingAvailabilityService, StreamingAvailabilityService>
+(
+    client => 
+    {
+        client.BaseAddress = new Uri(baseUrl);
+        client.DefaultRequestHeaders.Add(authHeaderName, apiKey);
+    }
+);
 
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();

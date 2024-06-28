@@ -5,6 +5,9 @@ using WhatToStreamBackend.Models.Db;
 using WhatToStreamBackend.Services;
 
 var builder = WebApplication.CreateBuilder(args);
+string? baseUrl = builder.Configuration["StreamingAvailabilityAPI:BaseUrl"];
+string? authHeaderName = builder.Configuration["StreamingAvailabilityAPI:AuthHeaderName"];
+string? apiKey = builder.Configuration["StreamingAvailabilityAPI:ApiKey"];
 
 // Add services to the container.
 
@@ -22,11 +25,8 @@ builder.Services.AddScoped<IShowsDbRepository, ShowsDbRepository>();
 
 // HttpClient to be consumed by the API Service
 builder.Services.AddHttpClient<IStreamingAvailabilityService, StreamingAvailabilityService>(client => {
-    client.BaseAddress = new Uri("https://streaming-availability.p.rapidapi.com/");
-    client.DefaultRequestHeaders.Add("X-RapidAPI-Host", "streaming-availability.p.rapidapi.com");
-    
-    // TODO: add key to appsettings
-    client.DefaultRequestHeaders.Add("X-RapidAPI-Key", "d93a557296mshb9ca7af3a795686p19a102jsn52e4cd558573"); 
+    client.BaseAddress = new Uri(baseUrl);
+    client.DefaultRequestHeaders.Add(authHeaderName, apiKey); 
 });
 
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle

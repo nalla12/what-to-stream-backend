@@ -54,6 +54,9 @@ public class Show
     [JsonPropertyName("rating")]
     public int? Rating { get; set; }
     
+    [JsonPropertyName("runtime")]
+    public int? Runtime { get; set; }
+    
     [JsonPropertyName("seasonCount")]
     public int? SeasonCount { get; set; }
     

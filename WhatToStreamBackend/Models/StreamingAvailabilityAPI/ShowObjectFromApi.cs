@@ -1,6 +1,6 @@
 namespace WhatToStreamBackend.Models.StreamingAvailabilityAPI;
 
-public class ShowsComplete
+public class ShowObjectFromApi
 {
     public string itemType { get; set; }
     public string showType { get; set; }
@@ -9,14 +9,12 @@ public class ShowsComplete
     public string tmdbId { get; set; }
     public string title { get; set; }
     public string overview { get; set; }
-    public int releaseYear { get; set; }
-    public string originalTitle { get; set; }
+    public string? originalTitle { get; set; }
     public Genres[] genres { get; set; }
-    public string[] directors { get; set; }
-    public string[] cast { get; set; }
-    public int rating { get; set; }
-    public ImageSet imageSet { get; set; }
-    public Dictionary<string, CountryStreamingOption[]> streamingOptions { get; set; }
+    public string[]? cast { get; set; }
+    public int? rating { get; set; } // min 0, max 100
+    public ImageSet? imageSet { get; set; }
+    public Dictionary<string, CountryStreamingOption[]>? streamingOptions { get; set; }
 }
 
 public class Genres

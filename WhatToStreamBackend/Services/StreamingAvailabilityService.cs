@@ -10,7 +10,7 @@ public class StreamingAvailabilityService(HttpClient http) : IStreamingAvailabil
 {
     public ShowGenre[]? ShowGenres { get; set; }
 
-    public async Task<object?> GetShowsByFilters(
+    public async Task<object[]?> GetShowsByFilters(
         string countryCode,
         string showType,
         int? ratingMin = null,
@@ -20,13 +20,13 @@ public class StreamingAvailabilityService(HttpClient http) : IStreamingAvailabil
     )
     {
         string path = "shows/search/filters";
+        object? resObject;
+        object[]? showsFromRes;
+        
         NameValueCollection query = HttpUtility.ParseQueryString(string.Empty);
 
         // Construct query string
-        if (!string.IsNullOrEmpty(countryCode))
             query["country"] = countryCode;
-
-        if (!string.IsNullOrEmpty(showType))
             query["show_type"] = showType;
 
         if (ratingMin.HasValue)
@@ -47,7 +47,6 @@ public class StreamingAvailabilityService(HttpClient http) : IStreamingAvailabil
 
         // Deserialize the response body
         await using Stream resStream = await res.Content.ReadAsStreamAsync();
-        object? resObject;
 
         if (showType == "movie")
         {
@@ -70,7 +69,7 @@ public class StreamingAvailabilityService(HttpClient http) : IStreamingAvailabil
             case ShowsByFiltersResult<ShowsMovie> movieResults:
             {
                 // Process movieResults
-                Show[]? shows = movieResults.Shows.Select(s => new Show
+                showsFromRes = movieResults.Shows.Select(s => new Show
                 {
                     Id = s.id,
                     ItemType = s.itemType,
@@ -84,32 +83,32 @@ public class StreamingAvailabilityService(HttpClient http) : IStreamingAvailabil
                     Rating = s.rating,
                     Runtime = s.runtime,
                     ImageSet = null,
-                    ShowGenres = null,
-                    StreamingOptions = null
+                    ShowGenres = s.genres.Select(g => new ShowGenre
+                    {
+                        ShowId = s.id,
+                        GenreId = g.id
+                    }).ToArray(),
+                    StreamingOptions = GetCountryInfoStreamingOption(s.streamingOptions, countryCode).Select(so => new StreamingOption
+                    {
+                        ShowId = s.id,
+                        ServiceId = so.service.id,
+                        CountryCode = countryCode,
+                        Type = so.type,
+                        Link = so.link,
+                        VideoLink = so.videoLink,
+                        Quality = so.quality,
+                        ExpiresSoon = so.expiresSoon,
+                        ExpiresOn = so.expiresOn,
+                        AvailableSince = so.availableSince
+                    }).ToArray(),
                 }).ToArray();
-        
-                /*this.ShowGenres = movieResults.Shows
-                .SelectMany(s => s.genres.Select(g => new ShowGenre
-                {
-                    ShowId = s.id,
-                    GenreId = g.id
-                }))
-                .ToArray();
 
-            if (this.ShowGenres != null)
-            {
-                foreach (var showGenre in this.ShowGenres)
-                {
-                    Console.WriteLine($"ShowId: {showGenre.ShowId}, GenreId: {showGenre.GenreId}");
-                }
-            }*/
-
-                return shows;
+                break;
             }
             case ShowsByFiltersResult<ShowsSeries> seriesResults:
             {
                 // Process seriesResults
-                Show[]? shows = seriesResults.Shows.Select(s => new Show
+                showsFromRes = seriesResults.Shows.Select(s => new Show
                 {
                     Id = s.id,
                     ItemType = s.itemType,
@@ -125,14 +124,34 @@ public class StreamingAvailabilityService(HttpClient http) : IStreamingAvailabil
                     SeasonCount = s.seasonCount,
                     EpisodeCount = s.episodeCount,
                     ImageSet = null,
-                    ShowGenres = null,
+                    ShowGenres = s.genres.Select(g => new ShowGenre
+                    {
+                        ShowId = s.id,
+                        GenreId = g.id
+                    }).ToArray(),
                     StreamingOptions = null
                 }).ToArray();
-            
-                return shows;
+
+                break;
             }
             default:
-                return resObject;
+                showsFromRes = [];
+                break;
+        }
+
+        return showsFromRes;
+    }
+    
+    public static CountryStreamingOption[]? GetCountryInfoStreamingOption(Dictionary<string, CountryStreamingOption[]> streamingOptions,string countryCode)
+    {
+        if (streamingOptions.TryGetValue(countryCode, out CountryStreamingOption[] cso))
+        {
+            return cso;
+        }
+        else
+        {
+            // Handle the case where the country code is not found
+            return null; // or throw an exception or return a default value
         }
     }
 }

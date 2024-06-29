@@ -75,7 +75,8 @@ public class CountryStreamingOption
     public string videoLink { get; set; }
     public string quality { get; set; }
     public bool expiresSoon { get; set; }
-    public int availableSince { get; set; }
+    public long? expiresOn { get; set; }
+    public long availableSince { get; set; }
     public Addon addon { get; set; }
     public Price price { get; set; }
 }

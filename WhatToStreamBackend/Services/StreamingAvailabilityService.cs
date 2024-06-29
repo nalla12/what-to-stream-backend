@@ -82,7 +82,41 @@ public class StreamingAvailabilityService(HttpClient http) : IStreamingAvailabil
                     ReleaseYear = s.releaseYear,
                     Rating = s.rating,
                     Runtime = s.runtime,
-                    ImageSet = null,
+                    ImageSet = s.imageSet != null ? new ShowImageSet
+                    {
+                        VerticalPoster = s.imageSet.verticalPoster != null ? new VerticalImage()
+                        {
+                            W240 = s.imageSet.verticalPoster.w240,
+                            W360 = s.imageSet.verticalPoster.w360,
+                            W480 = s.imageSet.verticalPoster.w480,
+                            W600 = s.imageSet.verticalPoster.w600,
+                            W720 = s.imageSet.verticalPoster.w720
+                        } : null,
+                        HorizontalPoster = s.imageSet.horizontalPoster != null ? new HorizontalImage()
+                        {
+                            W360 = s.imageSet.horizontalPoster.w360,
+                            W480 = s.imageSet.horizontalPoster.w480,
+                            W720 = s.imageSet.horizontalPoster.w720,
+                            W1080 = s.imageSet.horizontalPoster.w1080,
+                            W1440 = s.imageSet.horizontalPoster.w1440
+                        } : null,
+                        VerticalBackdrop = s.imageSet.verticalBackdrop != null ? new VerticalImage()
+                        {
+                            W240 = s.imageSet.verticalBackdrop.w240,
+                            W360 = s.imageSet.verticalBackdrop.w360,
+                            W480 = s.imageSet.verticalBackdrop.w480,
+                            W600 = s.imageSet.verticalBackdrop.w600,
+                            W720 = s.imageSet.verticalBackdrop.w720
+                        } : null,
+                        HorizontalBackdrop = s.imageSet.horizontalBackdrop != null ? new HorizontalImage()
+                        {
+                            W360 = s.imageSet.horizontalBackdrop.w360,
+                            W480 = s.imageSet.horizontalBackdrop.w480,
+                            W720 = s.imageSet.horizontalBackdrop.w720,
+                            W1080 = s.imageSet.horizontalBackdrop.w1080,
+                            W1440 = s.imageSet.horizontalBackdrop.w1440
+                        } : null
+                    } : null,
                     ShowGenres = s.genres.Select(g => new ShowGenre
                     {
                         ShowId = s.id,
@@ -123,13 +157,59 @@ public class StreamingAvailabilityService(HttpClient http) : IStreamingAvailabil
                     Rating = s.rating,
                     SeasonCount = s.seasonCount,
                     EpisodeCount = s.episodeCount,
-                    ImageSet = null,
+                    ImageSet = s.imageSet != null ? new ShowImageSet
+                    {
+                        VerticalPoster = s.imageSet.verticalPoster != null ? new VerticalImage()
+                        {
+                            W240 = s.imageSet.verticalPoster.w240,
+                            W360 = s.imageSet.verticalPoster.w360,
+                            W480 = s.imageSet.verticalPoster.w480,
+                            W600 = s.imageSet.verticalPoster.w600,
+                            W720 = s.imageSet.verticalPoster.w720
+                        } : null,
+                        HorizontalPoster = s.imageSet.horizontalPoster != null ? new HorizontalImage()
+                        {
+                            W360 = s.imageSet.horizontalPoster.w360,
+                            W480 = s.imageSet.horizontalPoster.w480,
+                            W720 = s.imageSet.horizontalPoster.w720,
+                            W1080 = s.imageSet.horizontalPoster.w1080,
+                            W1440 = s.imageSet.horizontalPoster.w1440
+                        } : null,
+                        VerticalBackdrop = s.imageSet.verticalBackdrop != null ? new VerticalImage()
+                        {
+                            W240 = s.imageSet.verticalBackdrop.w240,
+                            W360 = s.imageSet.verticalBackdrop.w360,
+                            W480 = s.imageSet.verticalBackdrop.w480,
+                            W600 = s.imageSet.verticalBackdrop.w600,
+                            W720 = s.imageSet.verticalBackdrop.w720
+                        } : null,
+                        HorizontalBackdrop = s.imageSet.horizontalBackdrop != null ? new HorizontalImage()
+                        {
+                            W360 = s.imageSet.horizontalBackdrop.w360,
+                            W480 = s.imageSet.horizontalBackdrop.w480,
+                            W720 = s.imageSet.horizontalBackdrop.w720,
+                            W1080 = s.imageSet.horizontalBackdrop.w1080,
+                            W1440 = s.imageSet.horizontalBackdrop.w1440
+                        } : null
+                    } : null,
                     ShowGenres = s.genres.Select(g => new ShowGenre
                     {
                         ShowId = s.id,
                         GenreId = g.id
                     }).ToArray(),
-                    StreamingOptions = null
+                    StreamingOptions = GetCountryInfoStreamingOption(s.streamingOptions, countryCode).Select(so => new StreamingOption
+                    {
+                        ShowId = s.id,
+                        ServiceId = so.service.id,
+                        CountryCode = countryCode,
+                        Type = so.type,
+                        Link = so.link,
+                        VideoLink = so.videoLink,
+                        Quality = so.quality,
+                        ExpiresSoon = so.expiresSoon,
+                        ExpiresOn = so.expiresOn,
+                        AvailableSince = so.availableSince
+                    }).ToArray(),
                 }).ToArray();
 
                 break;

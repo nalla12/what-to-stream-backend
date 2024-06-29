@@ -25,10 +25,10 @@ public class Genres
 
 public class ImageSet
 {
-    public VerticalPoster verticalPoster { get; set; }
-    public HorizontalPoster horizontalPoster { get; set; }
-    public VerticalBackdrop verticalBackdrop { get; set; }
-    public HorizontalBackdrop horizontalBackdrop { get; set; }
+    public VerticalPoster? verticalPoster { get; set; }
+    public HorizontalPoster? horizontalPoster { get; set; }
+    public VerticalBackdrop? verticalBackdrop { get; set; }
+    public HorizontalBackdrop? horizontalBackdrop { get; set; }
 }
 
 public class VerticalPoster

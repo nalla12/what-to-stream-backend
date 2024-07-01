@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using WhatToStreamBackend.Models.Db;
 using WhatToStreamBackend.Services;
 
@@ -6,7 +7,7 @@ namespace WhatToStreamBackend.Controllers;
 
 [Route("api/[controller]/[action]")]
 [ApiController]
-public class ImportController(IStreamingAvailabilityService streamingAvailabilityService) : ControllerBase
+public class ImportController(IStreamingAvailabilityService streamingAvailabilityService, IShowsDbRepository showsDbRepository) : ControllerBase
 {
     // Request shows from StreamingAvailability API
     // Get: import/getShowsByFilters
@@ -21,7 +22,7 @@ public class ImportController(IStreamingAvailabilityService streamingAvailabilit
     {
         try
         {
-            var filteredShows = await streamingAvailabilityService.GetShowsByFilters(
+            IEnumerable<Show>? filteredShows = await streamingAvailabilityService.GetShowsByFilters(
                 countryCode, showType, ratingMin, ratingMax, keyword, cursor);
 
             return Ok(filteredShows);
@@ -40,14 +41,14 @@ public class ImportController(IStreamingAvailabilityService streamingAvailabilit
     {
         try
         {
-            var filteredShows = await streamingAvailabilityService.GetShowById(id, countryCode);
-
-            return Ok(filteredShows);
+            Show? showById = await streamingAvailabilityService.GetShowById(id, countryCode);
+            await showsDbRepository.CreateShowAsync(showById);
+            return CreatedAtAction(nameof(GetShowById), new { id = showById.Id }, showById);
         }
-        catch (Exception e)
+        catch (DbUpdateException ex) when (ex.InnerException?.Message.Contains("duplicate key") == true)
         {
-            Console.WriteLine(e);
-            throw;
+            // Return a 409 Conflict response if the show ID already exists
+            return Conflict(new { message = $"A show with ID {id} already exists." });
         }
     }
 }

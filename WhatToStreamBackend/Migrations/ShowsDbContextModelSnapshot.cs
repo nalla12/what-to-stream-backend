@@ -4,7 +4,6 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
-using WhatToStreamBackend.Models;
 using WhatToStreamBackend.Models.Db;
 
 #nullable disable
@@ -18,12 +17,12 @@ namespace WhatToStreamBackend.Migrations
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "8.0.5")
+                .HasAnnotation("ProductVersion", "8.0.6")
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
-            modelBuilder.Entity("WhatToStreamBackend.Models.Country", b =>
+            modelBuilder.Entity("WhatToStreamBackend.Models.Db.Country", b =>
                 {
                     b.Property<string>("CountryCode")
                         .HasMaxLength(2)
@@ -70,15 +69,17 @@ namespace WhatToStreamBackend.Migrations
                         });
                 });
 
-            modelBuilder.Entity("WhatToStreamBackend.Models.Genre", b =>
+            modelBuilder.Entity("WhatToStreamBackend.Models.Db.Genre", b =>
                 {
                     b.Property<string>("Id")
                         .HasMaxLength(255)
-                        .HasColumnType("nvarchar(255)");
+                        .HasColumnType("nvarchar(255)")
+                        .HasAnnotation("Relational:JsonPropertyName", "id");
 
                     b.Property<string>("Name")
                         .HasMaxLength(255)
-                        .HasColumnType("nvarchar(255)");
+                        .HasColumnType("nvarchar(255)")
+                        .HasAnnotation("Relational:JsonPropertyName", "name");
 
                     b.HasKey("Id");
 
@@ -192,90 +193,111 @@ namespace WhatToStreamBackend.Migrations
                         });
                 });
 
-            modelBuilder.Entity("WhatToStreamBackend.Models.HorizontalImage", b =>
+            modelBuilder.Entity("WhatToStreamBackend.Models.Db.HorizontalImage", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
+                        .HasColumnType("int")
+                        .HasAnnotation("Relational:JsonPropertyName", "id");
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<string>("W1080")
                         .HasMaxLength(2000)
-                        .HasColumnType("nvarchar(2000)");
+                        .HasColumnType("nvarchar(2000)")
+                        .HasAnnotation("Relational:JsonPropertyName", "w1080");
 
                     b.Property<string>("W1440")
                         .HasMaxLength(2000)
-                        .HasColumnType("nvarchar(2000)");
+                        .HasColumnType("nvarchar(2000)")
+                        .HasAnnotation("Relational:JsonPropertyName", "w1440");
 
                     b.Property<string>("W360")
                         .HasMaxLength(2000)
-                        .HasColumnType("nvarchar(2000)");
+                        .HasColumnType("nvarchar(2000)")
+                        .HasAnnotation("Relational:JsonPropertyName", "w360");
 
                     b.Property<string>("W480")
                         .HasMaxLength(2000)
-                        .HasColumnType("nvarchar(2000)");
+                        .HasColumnType("nvarchar(2000)")
+                        .HasAnnotation("Relational:JsonPropertyName", "w480");
 
                     b.Property<string>("W720")
                         .HasMaxLength(2000)
-                        .HasColumnType("nvarchar(2000)");
+                        .HasColumnType("nvarchar(2000)")
+                        .HasAnnotation("Relational:JsonPropertyName", "w720");
 
                     b.HasKey("Id");
 
                     b.ToTable("HorizontalImages");
+
+                    b.HasAnnotation("Relational:JsonPropertyName", "horizontalPoster");
                 });
 
-            modelBuilder.Entity("WhatToStreamBackend.Models.ServiceImageSet", b =>
+            modelBuilder.Entity("WhatToStreamBackend.Models.Db.ServiceImageSet", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
+                        .HasColumnType("int")
+                        .HasAnnotation("Relational:JsonPropertyName", "id");
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<string>("DarkThemeImage")
                         .HasMaxLength(2000)
-                        .HasColumnType("nvarchar(2000)");
+                        .HasColumnType("nvarchar(2000)")
+                        .HasAnnotation("Relational:JsonPropertyName", "darkThemeImage");
 
                     b.Property<string>("LightThemeImage")
                         .HasMaxLength(2000)
-                        .HasColumnType("nvarchar(2000)");
+                        .HasColumnType("nvarchar(2000)")
+                        .HasAnnotation("Relational:JsonPropertyName", "lightThemeImage");
 
                     b.Property<string>("WhiteImage")
                         .HasMaxLength(2000)
-                        .HasColumnType("nvarchar(2000)");
+                        .HasColumnType("nvarchar(2000)")
+                        .HasAnnotation("Relational:JsonPropertyName", "whiteImage");
 
                     b.HasKey("Id");
 
                     b.ToTable("ServiceImageSets");
+
+                    b.HasAnnotation("Relational:JsonPropertyName", "imageSet");
                 });
 
-            modelBuilder.Entity("WhatToStreamBackend.Models.ServiceInfo", b =>
+            modelBuilder.Entity("WhatToStreamBackend.Models.Db.ServiceInfo", b =>
                 {
                     b.Property<string>("Id")
                         .HasMaxLength(255)
-                        .HasColumnType("nvarchar(255)");
+                        .HasColumnType("nvarchar(255)")
+                        .HasAnnotation("Relational:JsonPropertyName", "id");
 
                     b.Property<string>("HomePage")
                         .HasMaxLength(2000)
-                        .HasColumnType("nvarchar(2000)");
+                        .HasColumnType("nvarchar(2000)")
+                        .HasAnnotation("Relational:JsonPropertyName", "homePage");
 
                     b.Property<int?>("ImageSetId")
                         .HasColumnType("int");
 
                     b.Property<string>("Name")
+                        .IsRequired()
                         .HasMaxLength(2000)
-                        .HasColumnType("nvarchar(2000)");
+                        .HasColumnType("nvarchar(2000)")
+                        .HasAnnotation("Relational:JsonPropertyName", "name");
 
                     b.Property<string>("ThemeColorCode")
                         .HasMaxLength(255)
-                        .HasColumnType("nvarchar(255)");
+                        .HasColumnType("nvarchar(255)")
+                        .HasAnnotation("Relational:JsonPropertyName", "themeColorCode");
 
                     b.HasKey("Id");
 
                     b.HasIndex("ImageSetId");
 
                     b.ToTable("ServiceInfos");
+
+                    b.HasAnnotation("Relational:JsonPropertyName", "streamingService");
 
                     b.HasData(
                         new
@@ -308,66 +330,78 @@ namespace WhatToStreamBackend.Migrations
                         });
                 });
 
-            modelBuilder.Entity("WhatToStreamBackend.Models.Show", b =>
+            modelBuilder.Entity("WhatToStreamBackend.Models.Db.Show", b =>
                 {
                     b.Property<string>("Id")
                         .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
+                        .HasColumnType("nvarchar(50)")
+                        .HasAnnotation("Relational:JsonPropertyName", "id");
 
                     b.Property<int?>("EpisodeCount")
-                        .HasColumnType("int");
+                        .HasColumnType("int")
+                        .HasAnnotation("Relational:JsonPropertyName", "episodeCount");
 
                     b.Property<int?>("FirstAirYear")
-                        .HasColumnType("int");
+                        .HasColumnType("int")
+                        .HasAnnotation("Relational:JsonPropertyName", "firstAirYear");
 
                     b.Property<int?>("ImageSetId")
                         .HasColumnType("int");
 
                     b.Property<string>("ImdbId")
                         .HasMaxLength(255)
-                        .HasColumnType("nvarchar(255)");
+                        .HasColumnType("nvarchar(255)")
+                        .HasAnnotation("Relational:JsonPropertyName", "imdbId");
 
                     b.Property<string>("ItemType")
                         .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
+                        .HasColumnType("nvarchar(50)")
+                        .HasAnnotation("Relational:JsonPropertyName", "itemType");
 
                     b.Property<int?>("LastAirYear")
-                        .HasColumnType("int");
-
-                    b.Property<int?>("Maximum")
-                        .HasColumnType("int");
-
-                    b.Property<int?>("Minimum")
-                        .HasColumnType("int");
+                        .HasColumnType("int")
+                        .HasAnnotation("Relational:JsonPropertyName", "lastAirYear");
 
                     b.Property<string>("OriginalTitle")
                         .HasMaxLength(400)
-                        .HasColumnType("nvarchar(400)");
+                        .HasColumnType("nvarchar(400)")
+                        .HasAnnotation("Relational:JsonPropertyName", "originalTitle");
 
                     b.Property<string>("Overview")
                         .HasMaxLength(8000)
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("nvarchar(max)")
+                        .HasAnnotation("Relational:JsonPropertyName", "overview");
 
                     b.Property<int?>("Rating")
-                        .HasColumnType("int");
+                        .HasColumnType("int")
+                        .HasAnnotation("Relational:JsonPropertyName", "rating");
 
                     b.Property<int?>("ReleaseYear")
-                        .HasColumnType("int");
+                        .HasColumnType("int")
+                        .HasAnnotation("Relational:JsonPropertyName", "releaseYear");
+
+                    b.Property<int?>("Runtime")
+                        .HasColumnType("int")
+                        .HasAnnotation("Relational:JsonPropertyName", "runtime");
 
                     b.Property<int?>("SeasonCount")
-                        .HasColumnType("int");
+                        .HasColumnType("int")
+                        .HasAnnotation("Relational:JsonPropertyName", "seasonCount");
 
                     b.Property<string>("ShowType")
                         .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
+                        .HasColumnType("nvarchar(50)")
+                        .HasAnnotation("Relational:JsonPropertyName", "showType");
 
                     b.Property<string>("Title")
                         .HasMaxLength(400)
-                        .HasColumnType("nvarchar(400)");
+                        .HasColumnType("nvarchar(400)")
+                        .HasAnnotation("Relational:JsonPropertyName", "title");
 
                     b.Property<string>("TmdbId")
                         .HasMaxLength(255)
-                        .HasColumnType("nvarchar(255)");
+                        .HasColumnType("nvarchar(255)")
+                        .HasAnnotation("Relational:JsonPropertyName", "tmdbId");
 
                     b.HasKey("Id");
 
@@ -407,23 +441,27 @@ namespace WhatToStreamBackend.Migrations
                         });
                 });
 
-            modelBuilder.Entity("WhatToStreamBackend.Models.ShowGenre", b =>
+            modelBuilder.Entity("WhatToStreamBackend.Models.Db.ShowGenre", b =>
                 {
                     b.Property<string>("ShowId")
                         .HasMaxLength(50)
                         .HasColumnType("nvarchar(50)")
-                        .HasColumnOrder(0);
+                        .HasColumnOrder(0)
+                        .HasAnnotation("Relational:JsonPropertyName", "showId");
 
                     b.Property<string>("GenreId")
                         .HasMaxLength(255)
                         .HasColumnType("nvarchar(255)")
-                        .HasColumnOrder(1);
+                        .HasColumnOrder(1)
+                        .HasAnnotation("Relational:JsonPropertyName", "genreId");
 
                     b.HasKey("ShowId", "GenreId");
 
                     b.HasIndex("GenreId");
 
                     b.ToTable("ShowGenres");
+
+                    b.HasAnnotation("Relational:JsonPropertyName", "genres");
 
                     b.HasData(
                         new
@@ -448,11 +486,12 @@ namespace WhatToStreamBackend.Migrations
                         });
                 });
 
-            modelBuilder.Entity("WhatToStreamBackend.Models.ShowImageSet", b =>
+            modelBuilder.Entity("WhatToStreamBackend.Models.Db.ShowImageSet", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
+                        .HasColumnType("int")
+                        .HasAnnotation("Relational:JsonPropertyName", "id");
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
@@ -479,89 +518,93 @@ namespace WhatToStreamBackend.Migrations
                     b.HasIndex("VerticalPosterId");
 
                     b.ToTable("ShowImageSets");
+
+                    b.HasAnnotation("Relational:JsonPropertyName", "imageSet");
                 });
 
-            modelBuilder.Entity("WhatToStreamBackend.Models.StreamingOption", b =>
+            modelBuilder.Entity("WhatToStreamBackend.Models.Db.StreamingOption", b =>
                 {
-                    b.Property<int>("Id")
-                        .HasColumnType("int")
-                        .HasColumnOrder(0);
-
                     b.Property<string>("ShowId")
                         .HasMaxLength(50)
                         .HasColumnType("nvarchar(50)")
-                        .HasColumnOrder(1);
+                        .HasColumnOrder(0)
+                        .HasAnnotation("Relational:JsonPropertyName", "showId");
 
                     b.Property<string>("ServiceId")
                         .HasMaxLength(255)
                         .HasColumnType("nvarchar(255)")
-                        .HasColumnOrder(2);
+                        .HasColumnOrder(1)
+                        .HasAnnotation("Relational:JsonPropertyName", "serviceId");
 
                     b.Property<string>("CountryCode")
                         .HasMaxLength(2)
                         .HasColumnType("nvarchar(2)")
-                        .HasColumnOrder(3);
+                        .HasColumnOrder(2)
+                        .HasAnnotation("Relational:JsonPropertyName", "countryCode");
 
                     b.Property<long?>("AvailableSince")
-                        .HasColumnType("bigint");
+                        .HasColumnType("bigint")
+                        .HasAnnotation("Relational:JsonPropertyName", "availableSince");
 
                     b.Property<long?>("ExpiresOn")
-                        .HasColumnType("bigint");
+                        .HasColumnType("bigint")
+                        .HasAnnotation("Relational:JsonPropertyName", "expiresOn");
 
                     b.Property<bool?>("ExpiresSoon")
-                        .HasColumnType("bit");
+                        .HasColumnType("bit")
+                        .HasAnnotation("Relational:JsonPropertyName", "expiresSoon");
 
                     b.Property<string>("Link")
                         .HasMaxLength(2000)
-                        .HasColumnType("nvarchar(2000)");
+                        .HasColumnType("nvarchar(2000)")
+                        .HasAnnotation("Relational:JsonPropertyName", "link");
 
                     b.Property<string>("Quality")
                         .HasMaxLength(255)
-                        .HasColumnType("nvarchar(255)");
+                        .HasColumnType("nvarchar(255)")
+                        .HasAnnotation("Relational:JsonPropertyName", "quality");
 
                     b.Property<string>("Type")
                         .HasMaxLength(255)
-                        .HasColumnType("nvarchar(255)");
+                        .HasColumnType("nvarchar(255)")
+                        .HasAnnotation("Relational:JsonPropertyName", "type");
 
                     b.Property<string>("VideoLink")
                         .HasMaxLength(2000)
-                        .HasColumnType("nvarchar(2000)");
+                        .HasColumnType("nvarchar(2000)")
+                        .HasAnnotation("Relational:JsonPropertyName", "videoLink");
 
-                    b.HasKey("Id", "ShowId", "ServiceId", "CountryCode");
+                    b.HasKey("ShowId", "ServiceId", "CountryCode");
 
                     b.HasIndex("CountryCode");
 
                     b.HasIndex("ServiceId");
 
-                    b.HasIndex("ShowId");
-
                     b.ToTable("StreamingOptions");
+
+                    b.HasAnnotation("Relational:JsonPropertyName", "streamingOptions");
 
                     b.HasData(
                         new
                         {
-                            Id = 0,
                             ShowId = "66",
                             ServiceId = "netflix",
                             CountryCode = "dk"
                         },
                         new
                         {
-                            Id = 1,
                             ShowId = "66",
                             ServiceId = "netflix",
                             CountryCode = "us"
                         },
                         new
                         {
-                            Id = 2,
                             ShowId = "66",
                             ServiceId = "disney",
                             CountryCode = "us"
                         },
                         new
                         {
-                            Id = 3,
                             ShowId = "968",
                             ServiceId = "netflix",
                             CountryCode = "dk",
@@ -571,7 +614,6 @@ namespace WhatToStreamBackend.Migrations
                         },
                         new
                         {
-                            Id = 4,
                             ShowId = "968",
                             ServiceId = "netflix",
                             CountryCode = "us",
@@ -581,7 +623,7 @@ namespace WhatToStreamBackend.Migrations
                         });
                 });
 
-            modelBuilder.Entity("WhatToStreamBackend.Models.VerticalImage", b =>
+            modelBuilder.Entity("WhatToStreamBackend.Models.Db.VerticalImage", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -591,56 +633,63 @@ namespace WhatToStreamBackend.Migrations
 
                     b.Property<string>("W240")
                         .HasMaxLength(2000)
-                        .HasColumnType("nvarchar(2000)");
+                        .HasColumnType("nvarchar(2000)")
+                        .HasAnnotation("Relational:JsonPropertyName", "w240");
 
                     b.Property<string>("W360")
                         .HasMaxLength(2000)
-                        .HasColumnType("nvarchar(2000)");
+                        .HasColumnType("nvarchar(2000)")
+                        .HasAnnotation("Relational:JsonPropertyName", "w360");
 
                     b.Property<string>("W480")
                         .HasMaxLength(2000)
-                        .HasColumnType("nvarchar(2000)");
+                        .HasColumnType("nvarchar(2000)")
+                        .HasAnnotation("Relational:JsonPropertyName", "w480");
 
                     b.Property<string>("W600")
                         .HasMaxLength(2000)
-                        .HasColumnType("nvarchar(2000)");
+                        .HasColumnType("nvarchar(2000)")
+                        .HasAnnotation("Relational:JsonPropertyName", "w600");
 
                     b.Property<string>("W720")
                         .HasMaxLength(2000)
-                        .HasColumnType("nvarchar(2000)");
+                        .HasColumnType("nvarchar(2000)")
+                        .HasAnnotation("Relational:JsonPropertyName", "w720");
 
                     b.HasKey("Id");
 
                     b.ToTable("VerticalImages");
+
+                    b.HasAnnotation("Relational:JsonPropertyName", "verticalPoster");
                 });
 
-            modelBuilder.Entity("WhatToStreamBackend.Models.ServiceInfo", b =>
+            modelBuilder.Entity("WhatToStreamBackend.Models.Db.ServiceInfo", b =>
                 {
-                    b.HasOne("WhatToStreamBackend.Models.ServiceImageSet", "ImageSet")
+                    b.HasOne("WhatToStreamBackend.Models.Db.ServiceImageSet", "ImageSet")
                         .WithMany()
                         .HasForeignKey("ImageSetId");
 
                     b.Navigation("ImageSet");
                 });
 
-            modelBuilder.Entity("WhatToStreamBackend.Models.Show", b =>
+            modelBuilder.Entity("WhatToStreamBackend.Models.Db.Show", b =>
                 {
-                    b.HasOne("WhatToStreamBackend.Models.ShowImageSet", "ImageSet")
+                    b.HasOne("WhatToStreamBackend.Models.Db.ShowImageSet", "ImageSet")
                         .WithMany()
                         .HasForeignKey("ImageSetId");
 
                     b.Navigation("ImageSet");
                 });
 
-            modelBuilder.Entity("WhatToStreamBackend.Models.ShowGenre", b =>
+            modelBuilder.Entity("WhatToStreamBackend.Models.Db.ShowGenre", b =>
                 {
-                    b.HasOne("WhatToStreamBackend.Models.Genre", "Genre")
+                    b.HasOne("WhatToStreamBackend.Models.Db.Genre", "Genre")
                         .WithMany("ShowGenres")
                         .HasForeignKey("GenreId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("WhatToStreamBackend.Models.Show", "Show")
+                    b.HasOne("WhatToStreamBackend.Models.Db.Show", "Show")
                         .WithMany("ShowGenres")
                         .HasForeignKey("ShowId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -651,21 +700,21 @@ namespace WhatToStreamBackend.Migrations
                     b.Navigation("Show");
                 });
 
-            modelBuilder.Entity("WhatToStreamBackend.Models.ShowImageSet", b =>
+            modelBuilder.Entity("WhatToStreamBackend.Models.Db.ShowImageSet", b =>
                 {
-                    b.HasOne("WhatToStreamBackend.Models.HorizontalImage", "HorizontalBackdrop")
+                    b.HasOne("WhatToStreamBackend.Models.Db.HorizontalImage", "HorizontalBackdrop")
                         .WithMany()
                         .HasForeignKey("HorizontalBackdropId");
 
-                    b.HasOne("WhatToStreamBackend.Models.HorizontalImage", "HorizontalPoster")
+                    b.HasOne("WhatToStreamBackend.Models.Db.HorizontalImage", "HorizontalPoster")
                         .WithMany()
                         .HasForeignKey("HorizontalPosterId");
 
-                    b.HasOne("WhatToStreamBackend.Models.VerticalImage", "VerticalBackdrop")
+                    b.HasOne("WhatToStreamBackend.Models.Db.VerticalImage", "VerticalBackdrop")
                         .WithMany()
                         .HasForeignKey("VerticalBackdropId");
 
-                    b.HasOne("WhatToStreamBackend.Models.VerticalImage", "VerticalPoster")
+                    b.HasOne("WhatToStreamBackend.Models.Db.VerticalImage", "VerticalPoster")
                         .WithMany()
                         .HasForeignKey("VerticalPosterId");
 
@@ -678,21 +727,21 @@ namespace WhatToStreamBackend.Migrations
                     b.Navigation("VerticalPoster");
                 });
 
-            modelBuilder.Entity("WhatToStreamBackend.Models.StreamingOption", b =>
+            modelBuilder.Entity("WhatToStreamBackend.Models.Db.StreamingOption", b =>
                 {
-                    b.HasOne("WhatToStreamBackend.Models.Country", "Country")
+                    b.HasOne("WhatToStreamBackend.Models.Db.Country", "Country")
                         .WithMany("StreamingOptions")
                         .HasForeignKey("CountryCode")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("WhatToStreamBackend.Models.ServiceInfo", "StreamingService")
+                    b.HasOne("WhatToStreamBackend.Models.Db.ServiceInfo", "StreamingService")
                         .WithMany("StreamingOptions")
                         .HasForeignKey("ServiceId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("WhatToStreamBackend.Models.Show", "Show")
+                    b.HasOne("WhatToStreamBackend.Models.Db.Show", "Show")
                         .WithMany("StreamingOptions")
                         .HasForeignKey("ShowId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -705,22 +754,22 @@ namespace WhatToStreamBackend.Migrations
                     b.Navigation("StreamingService");
                 });
 
-            modelBuilder.Entity("WhatToStreamBackend.Models.Country", b =>
+            modelBuilder.Entity("WhatToStreamBackend.Models.Db.Country", b =>
                 {
                     b.Navigation("StreamingOptions");
                 });
 
-            modelBuilder.Entity("WhatToStreamBackend.Models.Genre", b =>
+            modelBuilder.Entity("WhatToStreamBackend.Models.Db.Genre", b =>
                 {
                     b.Navigation("ShowGenres");
                 });
 
-            modelBuilder.Entity("WhatToStreamBackend.Models.ServiceInfo", b =>
+            modelBuilder.Entity("WhatToStreamBackend.Models.Db.ServiceInfo", b =>
                 {
                     b.Navigation("StreamingOptions");
                 });
 
-            modelBuilder.Entity("WhatToStreamBackend.Models.Show", b =>
+            modelBuilder.Entity("WhatToStreamBackend.Models.Db.Show", b =>
                 {
                     b.Navigation("ShowGenres");
 

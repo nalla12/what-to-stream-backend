@@ -8,9 +8,7 @@ namespace WhatToStreamBackend.Services;
 
 public class StreamingAvailabilityService(HttpClient http) : IStreamingAvailabilityService
 {
-    public ShowGenre[]? ShowGenres { get; set; }
-
-    public async Task<object[]?> GetShowsByFilters(
+    public async Task<IEnumerable<Show>?> GetShowsByFilters(
         string countryCode,
         string showType,
         int? ratingMin = null,
@@ -20,8 +18,6 @@ public class StreamingAvailabilityService(HttpClient http) : IStreamingAvailabil
     )
     {
         string path = "shows/search/filters";
-        object? resObject;
-        object[]? showsFromRes;
         
         NameValueCollection query = HttpUtility.ParseQueryString(string.Empty);
 
@@ -50,188 +46,257 @@ public class StreamingAvailabilityService(HttpClient http) : IStreamingAvailabil
 
         if (showType == "movie")
         {
-            resObject = await JsonSerializer
+            var movieResults = await JsonSerializer
                 .DeserializeAsync<ShowsByFiltersResult<ShowsMovie>>(resStream);
+            
+            return movieResults.Shows.Select(s => 
+                MapDbShowFromMovieObject(s, countryCode)).ToArray();
         } 
-        else if (showType == "series")
+        
+        if (showType == "series")
         {
-            resObject = await JsonSerializer
+            var seriesResults = await JsonSerializer
                 .DeserializeAsync<ShowsByFiltersResult<ShowsSeries>>(resStream);
+            
+            return seriesResults.Shows.Select(s => 
+                MapDbShowFromSeriesObject(s, countryCode)).ToArray();
         }
-        else
-        {
-            throw new ArgumentException("Invalid show type");
-        }
-
-        switch (resObject)
-        {
-            // Map object to database models
-            case ShowsByFiltersResult<ShowsMovie> movieResults:
-            {
-                // Process movieResults
-                showsFromRes = movieResults.Shows.Select(s => new Show
-                {
-                    Id = s.id,
-                    ItemType = s.itemType,
-                    ShowType = s.showType,
-                    ImdbId = s.imdbId,
-                    TmdbId = s.tmdbId,
-                    Title = s.title,
-                    OriginalTitle = s.originalTitle,
-                    Overview = s.overview,
-                    ReleaseYear = s.releaseYear,
-                    Rating = s.rating,
-                    Runtime = s.runtime,
-                    ImageSet = s.imageSet != null ? new ShowImageSet
-                    {
-                        VerticalPoster = s.imageSet.verticalPoster != null ? new VerticalImage()
-                        {
-                            W240 = s.imageSet.verticalPoster.w240,
-                            W360 = s.imageSet.verticalPoster.w360,
-                            W480 = s.imageSet.verticalPoster.w480,
-                            W600 = s.imageSet.verticalPoster.w600,
-                            W720 = s.imageSet.verticalPoster.w720
-                        } : null,
-                        HorizontalPoster = s.imageSet.horizontalPoster != null ? new HorizontalImage()
-                        {
-                            W360 = s.imageSet.horizontalPoster.w360,
-                            W480 = s.imageSet.horizontalPoster.w480,
-                            W720 = s.imageSet.horizontalPoster.w720,
-                            W1080 = s.imageSet.horizontalPoster.w1080,
-                            W1440 = s.imageSet.horizontalPoster.w1440
-                        } : null,
-                        VerticalBackdrop = s.imageSet.verticalBackdrop != null ? new VerticalImage()
-                        {
-                            W240 = s.imageSet.verticalBackdrop.w240,
-                            W360 = s.imageSet.verticalBackdrop.w360,
-                            W480 = s.imageSet.verticalBackdrop.w480,
-                            W600 = s.imageSet.verticalBackdrop.w600,
-                            W720 = s.imageSet.verticalBackdrop.w720
-                        } : null,
-                        HorizontalBackdrop = s.imageSet.horizontalBackdrop != null ? new HorizontalImage()
-                        {
-                            W360 = s.imageSet.horizontalBackdrop.w360,
-                            W480 = s.imageSet.horizontalBackdrop.w480,
-                            W720 = s.imageSet.horizontalBackdrop.w720,
-                            W1080 = s.imageSet.horizontalBackdrop.w1080,
-                            W1440 = s.imageSet.horizontalBackdrop.w1440
-                        } : null
-                    } : null,
-                    ShowGenres = s.genres.Select(g => new ShowGenre
-                    {
-                        ShowId = s.id,
-                        GenreId = g.id
-                    }).ToArray(),
-                    StreamingOptions = GetCountryInfoStreamingOption(s.streamingOptions, countryCode).Select(so => new StreamingOption
-                    {
-                        ShowId = s.id,
-                        ServiceId = so.service.id,
-                        CountryCode = countryCode,
-                        Type = so.type,
-                        Link = so.link,
-                        VideoLink = so.videoLink,
-                        Quality = so.quality,
-                        ExpiresSoon = so.expiresSoon,
-                        ExpiresOn = so.expiresOn,
-                        AvailableSince = so.availableSince
-                    }).ToArray(),
-                }).ToArray();
-
-                break;
-            }
-            case ShowsByFiltersResult<ShowsSeries> seriesResults:
-            {
-                // Process seriesResults
-                showsFromRes = seriesResults.Shows.Select(s => new Show
-                {
-                    Id = s.id,
-                    ItemType = s.itemType,
-                    ShowType = s.showType,
-                    ImdbId = s.imdbId,
-                    TmdbId = s.tmdbId,
-                    Title = s.title,
-                    OriginalTitle = s.originalTitle,
-                    Overview = s.overview,
-                    FirstAirYear = s.firstAirYear,
-                    LastAirYear = s.lastAirYear,
-                    Rating = s.rating,
-                    SeasonCount = s.seasonCount,
-                    EpisodeCount = s.episodeCount,
-                    ImageSet = s.imageSet != null ? new ShowImageSet
-                    {
-                        VerticalPoster = s.imageSet.verticalPoster != null ? new VerticalImage()
-                        {
-                            W240 = s.imageSet.verticalPoster.w240,
-                            W360 = s.imageSet.verticalPoster.w360,
-                            W480 = s.imageSet.verticalPoster.w480,
-                            W600 = s.imageSet.verticalPoster.w600,
-                            W720 = s.imageSet.verticalPoster.w720
-                        } : null,
-                        HorizontalPoster = s.imageSet.horizontalPoster != null ? new HorizontalImage()
-                        {
-                            W360 = s.imageSet.horizontalPoster.w360,
-                            W480 = s.imageSet.horizontalPoster.w480,
-                            W720 = s.imageSet.horizontalPoster.w720,
-                            W1080 = s.imageSet.horizontalPoster.w1080,
-                            W1440 = s.imageSet.horizontalPoster.w1440
-                        } : null,
-                        VerticalBackdrop = s.imageSet.verticalBackdrop != null ? new VerticalImage()
-                        {
-                            W240 = s.imageSet.verticalBackdrop.w240,
-                            W360 = s.imageSet.verticalBackdrop.w360,
-                            W480 = s.imageSet.verticalBackdrop.w480,
-                            W600 = s.imageSet.verticalBackdrop.w600,
-                            W720 = s.imageSet.verticalBackdrop.w720
-                        } : null,
-                        HorizontalBackdrop = s.imageSet.horizontalBackdrop != null ? new HorizontalImage()
-                        {
-                            W360 = s.imageSet.horizontalBackdrop.w360,
-                            W480 = s.imageSet.horizontalBackdrop.w480,
-                            W720 = s.imageSet.horizontalBackdrop.w720,
-                            W1080 = s.imageSet.horizontalBackdrop.w1080,
-                            W1440 = s.imageSet.horizontalBackdrop.w1440
-                        } : null
-                    } : null,
-                    ShowGenres = s.genres.Select(g => new ShowGenre
-                    {
-                        ShowId = s.id,
-                        GenreId = g.id
-                    }).ToArray(),
-                    StreamingOptions = GetCountryInfoStreamingOption(s.streamingOptions, countryCode).Select(so => new StreamingOption
-                    {
-                        ShowId = s.id,
-                        ServiceId = so.service.id,
-                        CountryCode = countryCode,
-                        Type = so.type,
-                        Link = so.link,
-                        VideoLink = so.videoLink,
-                        Quality = so.quality,
-                        ExpiresSoon = so.expiresSoon,
-                        ExpiresOn = so.expiresOn,
-                        AvailableSince = so.availableSince
-                    }).ToArray(),
-                }).ToArray();
-
-                break;
-            }
-            default:
-                showsFromRes = [];
-                break;
-        }
-
-        return showsFromRes;
+        
+        throw new ArgumentException("Invalid show type");
     }
-    
-    public static CountryStreamingOption[]? GetCountryInfoStreamingOption(Dictionary<string, CountryStreamingOption[]> streamingOptions,string countryCode)
+
+    public async Task<Show?> GetShowById(string id, string? countryCode)
+    {
+        string path = $"shows/{id}";
+
+        NameValueCollection query = HttpUtility.ParseQueryString(string.Empty);
+
+        if (!string.IsNullOrEmpty(countryCode))
+            query["country"] = countryCode;
+
+        // The GET request response
+        HttpResponseMessage res = await http.GetAsync($"{path}?{query}");
+        res.EnsureSuccessStatusCode();
+
+        // Find the showType
+        string jsonAsString = await res.Content.ReadAsStringAsync();
+        string showType = ReadShowTypeFromJsonString(jsonAsString);
+        
+        // Deserialize the response body
+        await using Stream resStream = await res.Content.ReadAsStreamAsync();
+
+        // Deserialize the response body
+        if (showType == "movie")
+        {
+            var movie = await JsonSerializer.DeserializeAsync<ShowsMovie>(resStream);
+            return MapDbShowFromMovieObject(movie, countryCode);
+        }
+        
+        if (showType == "series")
+        {
+            var series = await JsonSerializer.DeserializeAsync<ShowsSeries>(resStream);
+            return MapDbShowFromSeriesObject(series, countryCode);
+        }
+        
+        throw new ArgumentException("Invalid show type");
+    }
+
+    private static CountryStreamingOption[] GetCountryInfoStreamingOption(
+                    Dictionary<string, CountryStreamingOption[]> streamingOptions, string countryCode)
     {
         if (streamingOptions.TryGetValue(countryCode, out CountryStreamingOption[] cso))
         {
             return cso;
         }
+
+        return [];
+    }
+
+    private string ReadShowTypeFromJsonString(string jsonAsString)
+    {
+        var options = new JsonDocumentOptions
+        {
+            AllowTrailingCommas = true
+        };
+        
+        using JsonDocument doc = JsonDocument.Parse(jsonAsString, options);
+        JsonElement root = doc.RootElement;
+
+        if (root.TryGetProperty("showType", out JsonElement showTypeElement))
+        {
+            return showTypeElement.GetString();
+        }
         else
         {
-            // Handle the case where the country code is not found
-            return null; // or throw an exception or return a default value
+            throw new JsonException("Show type not found in JSON");
         }
+    }
+
+    private Show MapDbShowFromMovieObject(ShowsMovie movieObject, string countryCode)
+    {
+        return new Show
+        {
+            Id = movieObject.id,
+            ItemType = movieObject.itemType,
+            ShowType = movieObject.showType,
+            ImdbId = movieObject.imdbId,
+            TmdbId = movieObject.tmdbId,
+            Title = movieObject.title,
+            OriginalTitle = movieObject.originalTitle,
+            Overview = movieObject.overview,
+            ReleaseYear = movieObject.releaseYear,
+            Rating = movieObject.rating,
+            Runtime = movieObject.runtime,
+            ImageSet = movieObject.imageSet != null
+                ? new ShowImageSet
+                {
+                    VerticalPoster = movieObject.imageSet.verticalPoster != null
+                        ? new VerticalImage()
+                        {
+                            W240 = movieObject.imageSet.verticalPoster.w240,
+                            W360 = movieObject.imageSet.verticalPoster.w360,
+                            W480 = movieObject.imageSet.verticalPoster.w480,
+                            W600 = movieObject.imageSet.verticalPoster.w600,
+                            W720 = movieObject.imageSet.verticalPoster.w720
+                        }
+                        : null,
+                    HorizontalPoster = movieObject.imageSet.horizontalPoster != null
+                        ? new HorizontalImage()
+                        {
+                            W360 = movieObject.imageSet.horizontalPoster.w360,
+                            W480 = movieObject.imageSet.horizontalPoster.w480,
+                            W720 = movieObject.imageSet.horizontalPoster.w720,
+                            W1080 = movieObject.imageSet.horizontalPoster.w1080,
+                            W1440 = movieObject.imageSet.horizontalPoster.w1440
+                        }
+                        : null,
+                    VerticalBackdrop = movieObject.imageSet.verticalBackdrop != null
+                        ? new VerticalImage()
+                        {
+                            W240 = movieObject.imageSet.verticalBackdrop.w240,
+                            W360 = movieObject.imageSet.verticalBackdrop.w360,
+                            W480 = movieObject.imageSet.verticalBackdrop.w480,
+                            W600 = movieObject.imageSet.verticalBackdrop.w600,
+                            W720 = movieObject.imageSet.verticalBackdrop.w720
+                        }
+                        : null,
+                    HorizontalBackdrop = movieObject.imageSet.horizontalBackdrop != null
+                        ? new HorizontalImage()
+                        {
+                            W360 = movieObject.imageSet.horizontalBackdrop.w360,
+                            W480 = movieObject.imageSet.horizontalBackdrop.w480,
+                            W720 = movieObject.imageSet.horizontalBackdrop.w720,
+                            W1080 = movieObject.imageSet.horizontalBackdrop.w1080,
+                            W1440 = movieObject.imageSet.horizontalBackdrop.w1440
+                        }
+                        : null
+                }
+                : null,
+            ShowGenres = movieObject.genres.Select(g => new ShowGenre
+            {
+                ShowId = movieObject.id,
+                GenreId = g.id
+            }).ToArray(),
+            StreamingOptions = GetCountryInfoStreamingOption(movieObject.streamingOptions, countryCode)
+                .Select(so =>
+                new StreamingOption
+                {
+                    ShowId = movieObject.id,
+                    ServiceId = so.service.id,
+                    CountryCode = countryCode,
+                    Type = so.type,
+                    Link = so.link,
+                    VideoLink = so.videoLink,
+                    Quality = so.quality,
+                    ExpiresSoon = so.expiresSoon,
+                    ExpiresOn = so.expiresOn,
+                    AvailableSince = so.availableSince
+                }).ToArray()
+        };
+    }
+
+    private Show MapDbShowFromSeriesObject(ShowsSeries seriesObject, string countryCode)
+    {
+        return new Show
+        {
+            Id = seriesObject.id,
+            ItemType = seriesObject.itemType,
+            ShowType = seriesObject.showType,
+            ImdbId = seriesObject.imdbId,
+            TmdbId = seriesObject.tmdbId,
+            Title = seriesObject.title,
+            OriginalTitle = seriesObject.originalTitle,
+            Overview = seriesObject.overview,
+            FirstAirYear = seriesObject.firstAirYear,
+            LastAirYear = seriesObject.lastAirYear,
+            Rating = seriesObject.rating,
+            SeasonCount = seriesObject.seasonCount,
+            EpisodeCount = seriesObject.episodeCount,
+            ImageSet = seriesObject.imageSet != null
+                ? new ShowImageSet
+                {
+                    VerticalPoster = seriesObject.imageSet.verticalPoster != null
+                        ? new VerticalImage()
+                        {
+                            W240 = seriesObject.imageSet.verticalPoster.w240,
+                            W360 = seriesObject.imageSet.verticalPoster.w360,
+                            W480 = seriesObject.imageSet.verticalPoster.w480,
+                            W600 = seriesObject.imageSet.verticalPoster.w600,
+                            W720 = seriesObject.imageSet.verticalPoster.w720
+                        }
+                        : null,
+                    HorizontalPoster = seriesObject.imageSet.horizontalPoster != null
+                        ? new HorizontalImage()
+                        {
+                            W360 = seriesObject.imageSet.horizontalPoster.w360,
+                            W480 = seriesObject.imageSet.horizontalPoster.w480,
+                            W720 = seriesObject.imageSet.horizontalPoster.w720,
+                            W1080 = seriesObject.imageSet.horizontalPoster.w1080,
+                            W1440 = seriesObject.imageSet.horizontalPoster.w1440
+                        }
+                        : null,
+                    VerticalBackdrop = seriesObject.imageSet.verticalBackdrop != null
+                        ? new VerticalImage()
+                        {
+                            W240 = seriesObject.imageSet.verticalBackdrop.w240,
+                            W360 = seriesObject.imageSet.verticalBackdrop.w360,
+                            W480 = seriesObject.imageSet.verticalBackdrop.w480,
+                            W600 = seriesObject.imageSet.verticalBackdrop.w600,
+                            W720 = seriesObject.imageSet.verticalBackdrop.w720
+                        }
+                        : null,
+                    HorizontalBackdrop = seriesObject.imageSet.horizontalBackdrop != null
+                        ? new HorizontalImage()
+                        {
+                            W360 = seriesObject.imageSet.horizontalBackdrop.w360,
+                            W480 = seriesObject.imageSet.horizontalBackdrop.w480,
+                            W720 = seriesObject.imageSet.horizontalBackdrop.w720,
+                            W1080 = seriesObject.imageSet.horizontalBackdrop.w1080,
+                            W1440 = seriesObject.imageSet.horizontalBackdrop.w1440
+                        }
+                        : null
+                }
+                : null,
+            ShowGenres = seriesObject.genres.Select(g => new ShowGenre
+            {
+                ShowId = seriesObject.id,
+                GenreId = g.id
+            }).ToArray(),
+            StreamingOptions = GetCountryInfoStreamingOption(seriesObject.streamingOptions, countryCode)
+                .Select(so =>
+                new StreamingOption
+                {
+                    ShowId = seriesObject.id,
+                    ServiceId = so.service.id,
+                    CountryCode = countryCode,
+                    Type = so.type,
+                    Link = so.link,
+                    VideoLink = so.videoLink,
+                    Quality = so.quality,
+                    ExpiresSoon = so.expiresSoon,
+                    ExpiresOn = so.expiresOn,
+                    AvailableSince = so.availableSince
+                }).ToArray(),
+        };
     }
 }

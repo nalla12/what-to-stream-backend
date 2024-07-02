@@ -8,5 +8,5 @@ public interface IShowsDbRepository
     Task<IEnumerable<Show>> GetShowsByGenre(string genre);
     Task<Show> CreateShowAsync(Show show);
     Task UpdateShowAsync(Show show);
-    Task DeleteShowAsync(string id); 
+    Task<string> DeleteShowAsync(string id); 
 }

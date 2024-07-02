@@ -103,9 +103,6 @@ public class ShowsDbContext : DbContext
         );
         
         modelBuilder.Entity<StreamingOption>().HasData(
-            new StreamingOption { ShowId = "66", CountryCode = "dk", ServiceId = "netflix"},
-            new StreamingOption { ShowId = "66", CountryCode = "us", ServiceId = "netflix"},
-            new StreamingOption { ShowId = "66", CountryCode = "us", ServiceId = "disney"},
             new StreamingOption { ShowId = "968", CountryCode = "dk", ServiceId = "netflix", Link = "https://www.netflix.com/title/81237994/", ExpiresSoon = false, AvailableSince = 1693809875},
             new StreamingOption { ShowId = "968", CountryCode = "us", ServiceId = "netflix", Link = "https://www.netflix.com/title/81237994/", ExpiresSoon = true, AvailableSince = 1648576144}
         );

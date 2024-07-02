@@ -79,15 +79,20 @@ namespace WhatToStreamBackend.Controllers
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteShow(string id)
         {
-            var showInRepo = await showsDbRepository.GetShowByIdAsync(id);
+            /*var showInRepo = await showsDbRepository.GetShowByIdAsync(id);
             if (showInRepo == null)
+            {
+                return NotFound($"Show with Id: {id} does not exist.");
+            }*/
+            
+            string deleteResult = await showsDbRepository.DeleteShowAsync(id);
+            
+            if (deleteResult == "Not found")
             {
                 return NotFound($"Show with Id: {id} does not exist.");
             }
             
-            // TODO: also delete related streaming options, genres, images
-            await showsDbRepository.DeleteShowAsync(id);
-            return Ok();
+            return Ok($"Show with Id: {id} has been deleted.");
         }
 
         private async Task<bool> ShowExists(string id)

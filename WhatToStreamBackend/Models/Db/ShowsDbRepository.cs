@@ -72,13 +72,53 @@ public class ShowsDbRepository : IShowsDbRepository
         await _db.SaveChangesAsync();
     }
 
-    public async Task DeleteShowAsync(string id)
+    public async Task<string> DeleteShowAsync(string id)
     {
-        var show = await _db.Shows.FindAsync(id);
+        // Retrieve the show including related entities
+        var show = await _db.Shows
+            .Include(s => s.ShowGenres)
+            .Include(s => s.StreamingOptions)
+            .Include(s => s.ImageSet)
+            .ThenInclude(i => i.VerticalPoster)
+            .Include(s => s.ImageSet)
+            .ThenInclude(i => i.HorizontalPoster)
+            .Include(s => s.ImageSet)
+            .ThenInclude(i => i.VerticalBackdrop)
+            .Include(s => s.ImageSet)
+            .ThenInclude(i => i.HorizontalBackdrop)
+            .FirstOrDefaultAsync(s => s.Id == id);
+
         if (show != null)
         {
+            // Delete all genre associations for the show
+            _db.ShowGenres.RemoveRange(show.ShowGenres);
+
+            // Delete all streaming options associations for the show
+            _db.StreamingOptions.RemoveRange(show.StreamingOptions);
+
+            // If the show has an associated ImageSet, delete it along with its images
+            if (show.ImageSet != null)
+            {
+                if (show.ImageSet.VerticalPoster != null)
+                    _db.VerticalImages.Remove(show.ImageSet.VerticalPoster);
+                if (show.ImageSet.HorizontalPoster != null)
+                    _db.HorizontalImages.Remove(show.ImageSet.HorizontalPoster);
+                if (show.ImageSet.VerticalBackdrop != null)
+                    _db.VerticalImages.Remove(show.ImageSet.VerticalBackdrop);
+                if (show.ImageSet.HorizontalBackdrop != null)
+                    _db.HorizontalImages.Remove(show.ImageSet.HorizontalBackdrop);
+
+                _db.ShowImageSets.Remove(show.ImageSet);
+            }
+
+            // Remove the show itself
             _db.Shows.Remove(show);
+
             await _db.SaveChangesAsync();
+            
+            return $"Show {id} deleted successfully";
         }
+
+        return "Not found";
     }
 }

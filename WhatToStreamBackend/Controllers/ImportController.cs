@@ -37,7 +37,7 @@ public class ImportController(IStreamingAvailabilityService streamingAvailabilit
     // Get: import/getShowById/:id
     [HttpGet("{id}")]
     public async Task<ActionResult<IEnumerable<Show>>> GetShowById(
-        string id, [FromQuery] string? countryCode)
+        string id, [FromQuery] string countryCode)
     {
         try
         {

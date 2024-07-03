@@ -44,11 +44,18 @@ public class ShowsDbRepository : IShowsDbRepository
             .ToListAsync();
     }
 
-    public async Task<Show> CreateShowAsync(Show show)
+    public async Task<Show> AddShowAsync(Show show)
     {
         _db.Shows.Add(show);
         await _db.SaveChangesAsync();
         return show;
+    }
+    
+    public async Task<Show> AddMultipleShowsAsync(IEnumerable<Show> shows)
+    {
+        _db.Shows.AddRange(shows);
+        await _db.SaveChangesAsync();
+        return shows.First();
     }
 
     public async Task CreateOrUpdateShowAsync(Show show)

@@ -41,7 +41,7 @@ namespace WhatToStreamBackend.Controllers
         {
             try
             {
-                await showsDbRepository.CreateShowAsync(show);
+                await showsDbRepository.AddShowAsync(show);
                 return CreatedAtAction(nameof(GetShowById), new { id = show.Id }, show);
             }
             catch (DbUpdateException ex) when (ex.InnerException?.Message.Contains("duplicate key") == true)

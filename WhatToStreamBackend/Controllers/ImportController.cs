@@ -24,7 +24,9 @@ public class ImportController(IStreamingAvailabilityService streamingAvailabilit
         {
             IEnumerable<Show>? filteredShows = await streamingAvailabilityService.GetShowsByFilters(
                 countryCode, showType, ratingMin, ratingMax, keyword, cursor);
-
+            
+            await showsDbRepository.AddMultipleShowsAsync(filteredShows);
+            
             return Ok(filteredShows);
         }
         catch (Exception e)
@@ -36,13 +38,15 @@ public class ImportController(IStreamingAvailabilityService streamingAvailabilit
     
     // Get: import/getShowById/:id
     [HttpGet("{id}")]
-    public async Task<ActionResult<IEnumerable<Show>>> GetShowById(
+    public async Task<ActionResult<Show>> GetShowById(
         string id, [FromQuery] string countryCode)
     {
         try
         {
             Show? showById = await streamingAvailabilityService.GetShowById(id, countryCode);
-            await showsDbRepository.CreateShowAsync(showById);
+            
+            await showsDbRepository.AddShowAsync(showById);
+            
             return CreatedAtAction(nameof(GetShowById), new { id = showById.Id }, showById);
         }
         catch (DbUpdateException ex) when (ex.InnerException?.Message.Contains("duplicate key") == true)

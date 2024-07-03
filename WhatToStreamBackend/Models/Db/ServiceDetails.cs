@@ -3,7 +3,7 @@ using System.Text.Json.Serialization;
 
 namespace WhatToStreamBackend.Models.Db;
 
-public class ServiceInfo
+public class ServiceDetails
 {
     [Key, Required]
     [MaxLength(255)]

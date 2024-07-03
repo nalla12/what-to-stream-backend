@@ -6,7 +6,7 @@ namespace WhatToStreamBackend.Models.Db;
 public class ShowsDbRepository : IShowsDbRepository
 {
     private readonly ShowsDbContext _db;
-    private readonly IIncludableQueryable<Show, ServiceInfo> _completeShows;
+    private readonly IIncludableQueryable<Show, ServiceDetails> _completeShows;
 
     public ShowsDbRepository(ShowsDbContext db)
     {

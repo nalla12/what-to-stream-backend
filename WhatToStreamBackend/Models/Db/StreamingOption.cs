@@ -24,7 +24,7 @@ public class StreamingOption
     [ForeignKey("ServiceId")]
     [JsonPropertyName("streamingService")]
     [Newtonsoft.Json.JsonIgnore]
-    public ServiceInfo? StreamingService { get; set; }
+    public ServiceDetails? StreamingService { get; set; }
     
     [MaxLength(2)]
     [JsonPropertyName("countryCode")]

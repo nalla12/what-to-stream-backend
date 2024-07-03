@@ -12,7 +12,7 @@ public class ShowsDbContext : DbContext
     public virtual DbSet<HorizontalImage> HorizontalImages { get; set; }
     public virtual DbSet<ServiceImageSet> ServiceImageSets { get; set; }
     public virtual DbSet<StreamingOption> StreamingOptions { get; set; }
-    public virtual DbSet<ServiceInfo> ServiceInfos { get; set; }
+    public virtual DbSet<ServiceDetails> ServiceDetails { get; set; }
     public virtual DbSet<Country> Countries { get; set; }
     
     public ShowsDbContext(DbContextOptions<ShowsDbContext> options) : base(options) {}
@@ -137,34 +137,62 @@ public class ShowsDbContext : DbContext
             new Country { CountryCode = "se", Name = "Sweden"}
         );
         
-        modelBuilder.Entity<ServiceInfo>().HasData(
-            new ServiceInfo
+        modelBuilder.Entity<ServiceDetails>().HasData(
+            new ServiceDetails
             {
                 Id = "apple", 
                 Name = "Apple TV", 
                 HomePage = "https://tv.apple.com", 
                 ThemeColorCode = "#000000"
             },
-            new ServiceInfo
+            new ServiceDetails
             {
                 Id = "netflix", 
                 Name = "Netflix", 
                 HomePage = "https://netflix.com", 
                 ThemeColorCode = "#E50914"
             },
-            new ServiceInfo
+            new ServiceDetails
             {
                 Id = "prime", 
                 Name = "Prime Video", 
                 HomePage = "https://www.primevideo.com/", 
                 ThemeColorCode = "#00A8E1"
             },
-            new ServiceInfo
+            new ServiceDetails
             {
                 Id = "disney", 
                 Name = "Disney+", 
                 HomePage = "https://www.disneyplus.com/", 
                 ThemeColorCode = "#01137c"
+            },
+            new ServiceDetails
+            {
+                Id = "hbo", 
+                Name = "Max", 
+                HomePage = "https://play.max.com/", 
+                ThemeColorCode = "#002be7"
+            },
+            new ServiceDetails
+            {
+                Id = "hulu", 
+                Name = "Hulu", 
+                HomePage = "https://www.hulu.com/", 
+                ThemeColorCode = "#1ce783"
+            },
+            new ServiceDetails
+            {
+                Id = "peacock", 
+                Name = "Peacock", 
+                HomePage = "https://www.peacocktv.com/", 
+                ThemeColorCode = "#000000"
+            },
+            new ServiceDetails
+            {
+                Id = "paramount", 
+                Name = "Paramount+", 
+                HomePage = "https://www.paramountplus.com/", 
+                ThemeColorCode = "#0064FF"
             }
         );
     }

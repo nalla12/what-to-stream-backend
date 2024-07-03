@@ -24,16 +24,11 @@ public class StreamingOption
     [ForeignKey("ServiceId")]
     [JsonPropertyName("streamingService")]
     [Newtonsoft.Json.JsonIgnore]
-    public ServiceDetails? StreamingService { get; set; }
+    public ServiceDetails? ServiceDetails { get; set; }
     
     [MaxLength(2)]
     [JsonPropertyName("countryCode")]
     public string CountryCode { get; set; }
-
-    [ForeignKey("CountryCode")]
-    [MaxLength(50)]
-    [Newtonsoft.Json.JsonIgnore]
-    public Country? Country { get; set; }
 
     [MaxLength(255)]
     [JsonPropertyName("type")]

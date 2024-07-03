@@ -12,8 +12,8 @@ using WhatToStreamBackend.Models.Db;
 namespace WhatToStreamBackend.Migrations
 {
     [DbContext(typeof(ShowsDbContext))]
-    [Migration("20240703111000_StreamingOptionAddKeyId")]
-    partial class StreamingOptionAddKeyId
+    [Migration("20240703231627_CreateNewDb")]
+    partial class CreateNewDb
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -237,6 +237,116 @@ namespace WhatToStreamBackend.Migrations
                     b.HasAnnotation("Relational:JsonPropertyName", "horizontalPoster");
                 });
 
+            modelBuilder.Entity("WhatToStreamBackend.Models.Db.ServiceDetails", b =>
+                {
+                    b.Property<string>("Id")
+                        .HasMaxLength(255)
+                        .HasColumnType("nvarchar(255)")
+                        .HasColumnOrder(0)
+                        .HasAnnotation("Relational:JsonPropertyName", "id");
+
+                    b.Property<string>("CountryCode")
+                        .HasMaxLength(2)
+                        .HasColumnType("nvarchar(2)")
+                        .HasColumnOrder(1)
+                        .HasAnnotation("Relational:JsonPropertyName", "countryCode");
+
+                    b.Property<string>("HomePage")
+                        .HasMaxLength(2000)
+                        .HasColumnType("nvarchar(2000)")
+                        .HasAnnotation("Relational:JsonPropertyName", "homePage");
+
+                    b.Property<int?>("ImageSetId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(2000)
+                        .HasColumnType("nvarchar(2000)")
+                        .HasAnnotation("Relational:JsonPropertyName", "name");
+
+                    b.Property<string>("ThemeColorCode")
+                        .HasMaxLength(255)
+                        .HasColumnType("nvarchar(255)")
+                        .HasAnnotation("Relational:JsonPropertyName", "themeColorCode");
+
+                    b.HasKey("Id", "CountryCode");
+
+                    b.HasIndex("CountryCode");
+
+                    b.HasIndex("ImageSetId");
+
+                    b.ToTable("ServiceDetails");
+
+                    b.HasAnnotation("Relational:JsonPropertyName", "streamingService");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = "apple",
+                            CountryCode = "dk",
+                            HomePage = "https://tv.apple.com",
+                            Name = "Apple TV",
+                            ThemeColorCode = "#000000"
+                        },
+                        new
+                        {
+                            Id = "netflix",
+                            CountryCode = "dk",
+                            HomePage = "https://netflix.com",
+                            Name = "Netflix",
+                            ThemeColorCode = "#E50914"
+                        },
+                        new
+                        {
+                            Id = "prime",
+                            CountryCode = "dk",
+                            HomePage = "https://www.primevideo.com/",
+                            Name = "Prime Video",
+                            ThemeColorCode = "#00A8E1"
+                        },
+                        new
+                        {
+                            Id = "disney",
+                            CountryCode = "dk",
+                            HomePage = "https://www.disneyplus.com/",
+                            Name = "Disney+",
+                            ThemeColorCode = "#01137c"
+                        },
+                        new
+                        {
+                            Id = "hbo",
+                            CountryCode = "dk",
+                            HomePage = "https://play.max.com/",
+                            Name = "Max",
+                            ThemeColorCode = "#002be7"
+                        },
+                        new
+                        {
+                            Id = "hulu",
+                            CountryCode = "dk",
+                            HomePage = "https://www.hulu.com/",
+                            Name = "Hulu",
+                            ThemeColorCode = "#1ce783"
+                        },
+                        new
+                        {
+                            Id = "peacock",
+                            CountryCode = "dk",
+                            HomePage = "https://www.peacocktv.com/",
+                            Name = "Peacock",
+                            ThemeColorCode = "#000000"
+                        },
+                        new
+                        {
+                            Id = "paramount",
+                            CountryCode = "dk",
+                            HomePage = "https://www.paramountplus.com/",
+                            Name = "Paramount+",
+                            ThemeColorCode = "#0064FF"
+                        });
+                });
+
             modelBuilder.Entity("WhatToStreamBackend.Models.Db.ServiceImageSet", b =>
                 {
                     b.Property<int>("Id")
@@ -266,71 +376,6 @@ namespace WhatToStreamBackend.Migrations
                     b.ToTable("ServiceImageSets");
 
                     b.HasAnnotation("Relational:JsonPropertyName", "imageSet");
-                });
-
-            modelBuilder.Entity("WhatToStreamBackend.Models.Db.ServiceInfo", b =>
-                {
-                    b.Property<string>("Id")
-                        .HasMaxLength(255)
-                        .HasColumnType("nvarchar(255)")
-                        .HasAnnotation("Relational:JsonPropertyName", "id");
-
-                    b.Property<string>("HomePage")
-                        .HasMaxLength(2000)
-                        .HasColumnType("nvarchar(2000)")
-                        .HasAnnotation("Relational:JsonPropertyName", "homePage");
-
-                    b.Property<int?>("ImageSetId")
-                        .HasColumnType("int");
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasMaxLength(2000)
-                        .HasColumnType("nvarchar(2000)")
-                        .HasAnnotation("Relational:JsonPropertyName", "name");
-
-                    b.Property<string>("ThemeColorCode")
-                        .HasMaxLength(255)
-                        .HasColumnType("nvarchar(255)")
-                        .HasAnnotation("Relational:JsonPropertyName", "themeColorCode");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("ImageSetId");
-
-                    b.ToTable("ServiceInfos");
-
-                    b.HasAnnotation("Relational:JsonPropertyName", "streamingService");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = "apple",
-                            HomePage = "https://tv.apple.com",
-                            Name = "Apple TV",
-                            ThemeColorCode = "#000000"
-                        },
-                        new
-                        {
-                            Id = "netflix",
-                            HomePage = "https://netflix.com",
-                            Name = "Netflix",
-                            ThemeColorCode = "#E50914"
-                        },
-                        new
-                        {
-                            Id = "prime",
-                            HomePage = "https://www.primevideo.com/",
-                            Name = "Prime Video",
-                            ThemeColorCode = "#00A8E1"
-                        },
-                        new
-                        {
-                            Id = "disney",
-                            HomePage = "https://www.disneyplus.com/",
-                            Name = "Disney+",
-                            ThemeColorCode = "#01137c"
-                        });
                 });
 
             modelBuilder.Entity("WhatToStreamBackend.Models.Db.Show", b =>
@@ -490,6 +535,9 @@ namespace WhatToStreamBackend.Migrations
                         .HasColumnType("nvarchar(2)")
                         .HasAnnotation("Relational:JsonPropertyName", "countryCode");
 
+                    b.Property<string>("CountryCode1")
+                        .HasColumnType("nvarchar(2)");
+
                     b.Property<long?>("ExpiresOn")
                         .HasColumnType("bigint")
                         .HasAnnotation("Relational:JsonPropertyName", "expiresOn");
@@ -532,11 +580,11 @@ namespace WhatToStreamBackend.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("CountryCode");
-
-                    b.HasIndex("ServiceId");
+                    b.HasIndex("CountryCode1");
 
                     b.HasIndex("ShowId");
+
+                    b.HasIndex("ServiceId", "CountryCode");
 
                     b.ToTable("StreamingOptions");
 
@@ -583,11 +631,19 @@ namespace WhatToStreamBackend.Migrations
                     b.HasAnnotation("Relational:JsonPropertyName", "verticalPoster");
                 });
 
-            modelBuilder.Entity("WhatToStreamBackend.Models.Db.ServiceInfo", b =>
+            modelBuilder.Entity("WhatToStreamBackend.Models.Db.ServiceDetails", b =>
                 {
+                    b.HasOne("WhatToStreamBackend.Models.Db.Country", "Country")
+                        .WithMany()
+                        .HasForeignKey("CountryCode")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.HasOne("WhatToStreamBackend.Models.Db.ServiceImageSet", "ImageSet")
                         .WithMany()
                         .HasForeignKey("ImageSetId");
+
+                    b.Navigation("Country");
 
                     b.Navigation("ImageSet");
                 });
@@ -649,17 +705,9 @@ namespace WhatToStreamBackend.Migrations
 
             modelBuilder.Entity("WhatToStreamBackend.Models.Db.StreamingOption", b =>
                 {
-                    b.HasOne("WhatToStreamBackend.Models.Db.Country", "Country")
+                    b.HasOne("WhatToStreamBackend.Models.Db.Country", null)
                         .WithMany("StreamingOptions")
-                        .HasForeignKey("CountryCode")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("WhatToStreamBackend.Models.Db.ServiceInfo", "StreamingService")
-                        .WithMany("StreamingOptions")
-                        .HasForeignKey("ServiceId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("CountryCode1");
 
                     b.HasOne("WhatToStreamBackend.Models.Db.Show", "Show")
                         .WithMany("StreamingOptions")
@@ -667,11 +715,15 @@ namespace WhatToStreamBackend.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("Country");
+                    b.HasOne("WhatToStreamBackend.Models.Db.ServiceDetails", "ServiceDetails")
+                        .WithMany("StreamingOptions")
+                        .HasForeignKey("ServiceId", "CountryCode")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("ServiceDetails");
 
                     b.Navigation("Show");
-
-                    b.Navigation("StreamingService");
                 });
 
             modelBuilder.Entity("WhatToStreamBackend.Models.Db.Country", b =>
@@ -684,7 +736,7 @@ namespace WhatToStreamBackend.Migrations
                     b.Navigation("ShowGenres");
                 });
 
-            modelBuilder.Entity("WhatToStreamBackend.Models.Db.ServiceInfo", b =>
+            modelBuilder.Entity("WhatToStreamBackend.Models.Db.ServiceDetails", b =>
                 {
                     b.Navigation("StreamingOptions");
                 });

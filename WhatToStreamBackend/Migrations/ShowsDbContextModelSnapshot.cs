@@ -239,7 +239,14 @@ namespace WhatToStreamBackend.Migrations
                     b.Property<string>("Id")
                         .HasMaxLength(255)
                         .HasColumnType("nvarchar(255)")
+                        .HasColumnOrder(0)
                         .HasAnnotation("Relational:JsonPropertyName", "id");
+
+                    b.Property<string>("CountryCode")
+                        .HasMaxLength(2)
+                        .HasColumnType("nvarchar(2)")
+                        .HasColumnOrder(1)
+                        .HasAnnotation("Relational:JsonPropertyName", "countryCode");
 
                     b.Property<string>("HomePage")
                         .HasMaxLength(2000)
@@ -260,7 +267,9 @@ namespace WhatToStreamBackend.Migrations
                         .HasColumnType("nvarchar(255)")
                         .HasAnnotation("Relational:JsonPropertyName", "themeColorCode");
 
-                    b.HasKey("Id");
+                    b.HasKey("Id", "CountryCode");
+
+                    b.HasIndex("CountryCode");
 
                     b.HasIndex("ImageSetId");
 
@@ -272,6 +281,7 @@ namespace WhatToStreamBackend.Migrations
                         new
                         {
                             Id = "apple",
+                            CountryCode = "dk",
                             HomePage = "https://tv.apple.com",
                             Name = "Apple TV",
                             ThemeColorCode = "#000000"
@@ -279,6 +289,7 @@ namespace WhatToStreamBackend.Migrations
                         new
                         {
                             Id = "netflix",
+                            CountryCode = "dk",
                             HomePage = "https://netflix.com",
                             Name = "Netflix",
                             ThemeColorCode = "#E50914"
@@ -286,6 +297,7 @@ namespace WhatToStreamBackend.Migrations
                         new
                         {
                             Id = "prime",
+                            CountryCode = "dk",
                             HomePage = "https://www.primevideo.com/",
                             Name = "Prime Video",
                             ThemeColorCode = "#00A8E1"
@@ -293,6 +305,7 @@ namespace WhatToStreamBackend.Migrations
                         new
                         {
                             Id = "disney",
+                            CountryCode = "dk",
                             HomePage = "https://www.disneyplus.com/",
                             Name = "Disney+",
                             ThemeColorCode = "#01137c"
@@ -300,6 +313,7 @@ namespace WhatToStreamBackend.Migrations
                         new
                         {
                             Id = "hbo",
+                            CountryCode = "dk",
                             HomePage = "https://play.max.com/",
                             Name = "Max",
                             ThemeColorCode = "#002be7"
@@ -307,6 +321,7 @@ namespace WhatToStreamBackend.Migrations
                         new
                         {
                             Id = "hulu",
+                            CountryCode = "dk",
                             HomePage = "https://www.hulu.com/",
                             Name = "Hulu",
                             ThemeColorCode = "#1ce783"
@@ -314,6 +329,7 @@ namespace WhatToStreamBackend.Migrations
                         new
                         {
                             Id = "peacock",
+                            CountryCode = "dk",
                             HomePage = "https://www.peacocktv.com/",
                             Name = "Peacock",
                             ThemeColorCode = "#000000"
@@ -321,6 +337,7 @@ namespace WhatToStreamBackend.Migrations
                         new
                         {
                             Id = "paramount",
+                            CountryCode = "dk",
                             HomePage = "https://www.paramountplus.com/",
                             Name = "Paramount+",
                             ThemeColorCode = "#0064FF"
@@ -515,6 +532,9 @@ namespace WhatToStreamBackend.Migrations
                         .HasColumnType("nvarchar(2)")
                         .HasAnnotation("Relational:JsonPropertyName", "countryCode");
 
+                    b.Property<string>("CountryCode1")
+                        .HasColumnType("nvarchar(2)");
+
                     b.Property<long?>("ExpiresOn")
                         .HasColumnType("bigint")
                         .HasAnnotation("Relational:JsonPropertyName", "expiresOn");
@@ -557,11 +577,11 @@ namespace WhatToStreamBackend.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("CountryCode");
-
-                    b.HasIndex("ServiceId");
+                    b.HasIndex("CountryCode1");
 
                     b.HasIndex("ShowId");
+
+                    b.HasIndex("ServiceId", "CountryCode");
 
                     b.ToTable("StreamingOptions");
 
@@ -610,9 +630,17 @@ namespace WhatToStreamBackend.Migrations
 
             modelBuilder.Entity("WhatToStreamBackend.Models.Db.ServiceDetails", b =>
                 {
+                    b.HasOne("WhatToStreamBackend.Models.Db.Country", "Country")
+                        .WithMany()
+                        .HasForeignKey("CountryCode")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.HasOne("WhatToStreamBackend.Models.Db.ServiceImageSet", "ImageSet")
                         .WithMany()
                         .HasForeignKey("ImageSetId");
+
+                    b.Navigation("Country");
 
                     b.Navigation("ImageSet");
                 });
@@ -674,17 +702,9 @@ namespace WhatToStreamBackend.Migrations
 
             modelBuilder.Entity("WhatToStreamBackend.Models.Db.StreamingOption", b =>
                 {
-                    b.HasOne("WhatToStreamBackend.Models.Db.Country", "Country")
+                    b.HasOne("WhatToStreamBackend.Models.Db.Country", null)
                         .WithMany("StreamingOptions")
-                        .HasForeignKey("CountryCode")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("WhatToStreamBackend.Models.Db.ServiceDetails", "StreamingService")
-                        .WithMany("StreamingOptions")
-                        .HasForeignKey("ServiceId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("CountryCode1");
 
                     b.HasOne("WhatToStreamBackend.Models.Db.Show", "Show")
                         .WithMany("StreamingOptions")
@@ -692,11 +712,15 @@ namespace WhatToStreamBackend.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("Country");
+                    b.HasOne("WhatToStreamBackend.Models.Db.ServiceDetails", "ServiceDetails")
+                        .WithMany("StreamingOptions")
+                        .HasForeignKey("ServiceId", "CountryCode")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("ServiceDetails");
 
                     b.Navigation("Show");
-
-                    b.Navigation("StreamingService");
                 });
 
             modelBuilder.Entity("WhatToStreamBackend.Models.Db.Country", b =>

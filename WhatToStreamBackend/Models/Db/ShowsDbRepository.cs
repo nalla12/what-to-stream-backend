@@ -15,7 +15,7 @@ public class ShowsDbRepository : IShowsDbRepository
             .Include(s => s.ShowGenres)
                 .ThenInclude(sg => sg.Genre)
             .Include(s => s.StreamingOptions)
-                .ThenInclude(so => so.StreamingService);
+                .ThenInclude(so => so.ServiceDetails);
     }
 
     public async Task<IEnumerable<Show>> GetAllShowsAsync()

@@ -21,9 +21,12 @@ public class ShowsDbContext : DbContext
     {
         base.OnModelCreating(modelBuilder);
         
-        // Configure composite primary key for ShowGenre
+        // Configure composite primary key
         modelBuilder.Entity<ShowGenre>()
             .HasKey(sg => new { sg.ShowId, sg.GenreId });
+        
+        modelBuilder.Entity<ServiceDetails>()
+            .HasKey(sd => new { sd.Id, sd.CountryCode });
 
         // Configure relationships
         modelBuilder.Entity<ShowGenre>()
@@ -36,21 +39,15 @@ public class ShowsDbContext : DbContext
             .WithMany(g => g.ShowGenres)
             .HasForeignKey(sg => sg.GenreId);
 
-        // Configure relationships
         modelBuilder.Entity<StreamingOption>()
             .HasOne(so => so.Show)
             .WithMany(m => m.StreamingOptions)
             .HasForeignKey(so => so.ShowId);
 
         modelBuilder.Entity<StreamingOption>()
-            .HasOne(so => so.StreamingService)
+            .HasOne(so => so.ServiceDetails)
             .WithMany(g => g.StreamingOptions)
-            .HasForeignKey(so => so.ServiceId);
-        
-        modelBuilder.Entity<StreamingOption>()
-            .HasOne(so => so.Country)
-            .WithMany(g => g.StreamingOptions)
-            .HasForeignKey(so => so.CountryCode);
+            .HasForeignKey(so => new{so.ServiceId, so.CountryCode});
         
         // Seed data
         /*modelBuilder.Entity<Show>().HasData(
@@ -141,21 +138,24 @@ public class ShowsDbContext : DbContext
             new ServiceDetails
             {
                 Id = "apple", 
-                Name = "Apple TV", 
+                Name = "Apple TV",
+                CountryCode = "dk",
                 HomePage = "https://tv.apple.com", 
                 ThemeColorCode = "#000000"
             },
             new ServiceDetails
             {
-                Id = "netflix", 
-                Name = "Netflix", 
-                HomePage = "https://netflix.com", 
+                Id = "netflix",
+                Name = "Netflix",
+                CountryCode = "dk",
+                HomePage = "https://netflix.com",
                 ThemeColorCode = "#E50914"
             },
             new ServiceDetails
             {
                 Id = "prime", 
                 Name = "Prime Video", 
+                CountryCode = "dk",
                 HomePage = "https://www.primevideo.com/", 
                 ThemeColorCode = "#00A8E1"
             },
@@ -163,6 +163,7 @@ public class ShowsDbContext : DbContext
             {
                 Id = "disney", 
                 Name = "Disney+", 
+                CountryCode = "dk",
                 HomePage = "https://www.disneyplus.com/", 
                 ThemeColorCode = "#01137c"
             },
@@ -170,6 +171,7 @@ public class ShowsDbContext : DbContext
             {
                 Id = "hbo", 
                 Name = "Max", 
+                CountryCode = "dk",
                 HomePage = "https://play.max.com/", 
                 ThemeColorCode = "#002be7"
             },
@@ -177,6 +179,7 @@ public class ShowsDbContext : DbContext
             {
                 Id = "hulu", 
                 Name = "Hulu", 
+                CountryCode = "dk",
                 HomePage = "https://www.hulu.com/", 
                 ThemeColorCode = "#1ce783"
             },
@@ -184,6 +187,7 @@ public class ShowsDbContext : DbContext
             {
                 Id = "peacock", 
                 Name = "Peacock", 
+                CountryCode = "dk",
                 HomePage = "https://www.peacocktv.com/", 
                 ThemeColorCode = "#000000"
             },
@@ -191,6 +195,7 @@ public class ShowsDbContext : DbContext
             {
                 Id = "paramount", 
                 Name = "Paramount+", 
+                CountryCode = "dk",
                 HomePage = "https://www.paramountplus.com/", 
                 ThemeColorCode = "#0064FF"
             }

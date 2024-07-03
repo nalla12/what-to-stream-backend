@@ -65,14 +65,12 @@ public class StreamingAvailabilityService(HttpClient http) : IStreamingAvailabil
         throw new ArgumentException("Invalid show type");
     }
 
-    public async Task<Show?> GetShowById(string id, string? countryCode)
+    public async Task<Show?> GetShowById(string id, string countryCode)
     {
         string path = $"shows/{id}";
 
         NameValueCollection query = HttpUtility.ParseQueryString(string.Empty);
-
-        if (!string.IsNullOrEmpty(countryCode))
-            query["country"] = countryCode;
+        query["country"] = countryCode;
 
         // The GET request response
         HttpResponseMessage res = await http.GetAsync($"{path}?{query}");

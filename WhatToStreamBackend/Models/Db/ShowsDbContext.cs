@@ -35,10 +35,6 @@ public class ShowsDbContext : DbContext
             .HasOne(sg => sg.Genre)
             .WithMany(g => g.ShowGenres)
             .HasForeignKey(sg => sg.GenreId);
-        
-        // Configure composite primary key for StreamingOption
-        modelBuilder.Entity<StreamingOption>()
-            .HasKey(so => new { so.ShowId, so.ServiceId, so.CountryCode });
 
         // Configure relationships
         modelBuilder.Entity<StreamingOption>()
@@ -57,7 +53,7 @@ public class ShowsDbContext : DbContext
             .HasForeignKey(so => so.CountryCode);
         
         // Seed data
-        modelBuilder.Entity<Show>().HasData(
+        /*modelBuilder.Entity<Show>().HasData(
             new Show
             {
                 Id = "66",
@@ -103,9 +99,10 @@ public class ShowsDbContext : DbContext
         );
         
         modelBuilder.Entity<StreamingOption>().HasData(
-            new StreamingOption { ShowId = "968", CountryCode = "dk", ServiceId = "netflix", Link = "https://www.netflix.com/title/81237994/", ExpiresSoon = false, AvailableSince = 1693809875},
-            new StreamingOption { ShowId = "968", CountryCode = "us", ServiceId = "netflix", Link = "https://www.netflix.com/title/81237994/", ExpiresSoon = true, AvailableSince = 1648576144}
-        );
+            new StreamingOption { Id = 9991, ShowId = "66", CountryCode = "dk", ServiceId = "disney", Link = "blabla", ExpiresSoon = true, AvailableSince = 1693809875},
+            new StreamingOption { Id = 9992, ShowId = "968", CountryCode = "dk", ServiceId = "netflix", Link = "https://www.netflix.com/title/81237994/", ExpiresSoon = false, AvailableSince = 1693809875},
+            new StreamingOption { Id = 9993, ShowId = "968", CountryCode = "us", ServiceId = "netflix", Link = "https://www.netflix.com/title/81237994/", ExpiresSoon = true, AvailableSince = 1648576144}
+        );*/
         
         modelBuilder.Entity<Genre>().HasData(
             new Genre { Id = "action", Name = "Action"},

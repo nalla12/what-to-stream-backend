@@ -13,5 +13,5 @@ public interface IStreamingAvailabilityService
         string? cursor
     );
 
-    Task<Show?> GetShowById(string id, string? countryCode);
+    Task<Show?> GetShowById(string id, string countryCode);
 }

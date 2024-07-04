@@ -28,7 +28,7 @@ public class StreamingOption
     
     [MaxLength(2)]
     [JsonPropertyName("countryCode")]
-    public string CountryCode { get; set; }
+    public string CountryCode { get; set; } // TODO: conflicting name, consider renaming
 
     [MaxLength(255)]
     [JsonPropertyName("type")]

@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using WhatToStreamBackend.Models.Db;
+using WhatToStreamBackend.Models.StreamingAvailabilityAPI;
 using WhatToStreamBackend.Services;
 
 namespace WhatToStreamBackend.Controllers;
@@ -54,5 +55,11 @@ public class ImportController(IStreamingAvailabilityService streamingAvailabilit
             // Return a 409 Conflict response if the show ID already exists
             return Conflict(new { message = $"A show with ID {id} already exists." });
         }
+    }
+    
+    [HttpGet]
+    public async Task<ActionResult<Dictionary<string, CountryServices>>> GetAllStreamingServicesByCountry()
+    {
+        return await streamingAvailabilityService.GetAllStreamingServicesByCountry();
     }
 }

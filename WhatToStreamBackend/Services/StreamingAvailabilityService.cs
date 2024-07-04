@@ -99,11 +99,10 @@ public class StreamingAvailabilityService(HttpClient http) : IStreamingAvailabil
         throw new ArgumentException("Invalid show type");
     }
     
-    public async Task<List<Country>> GetAllStreamingServicesByCountry()
+    public async Task<List<ServiceDetails>> GetAllStreamingServicesByCountry()
     {
         string path = "countries";
         
-        // The GET request response
         HttpResponseMessage res = await http.GetAsync(path);
         res.EnsureSuccessStatusCode();
 
@@ -111,6 +110,53 @@ public class StreamingAvailabilityService(HttpClient http) : IStreamingAvailabil
         await using Stream resStream = await res.Content.ReadAsStreamAsync();
         var servicesByCountry = await JsonSerializer.DeserializeAsync<Dictionary<string, CountryServices>>(resStream);
 
+        if (servicesByCountry == null)
+            throw new Exception("Failed to deserialize the API response.");
+        
+        var services = new List<ServiceDetails>();
+
+        foreach (var entry in servicesByCountry)
+        {
+            var country = entry.Value.countryCode;
+            var servicesList = entry.Value.services;
+
+            var details = servicesList.Select(s => new ServiceDetails
+            {
+                Id = s.id,
+                Name = s.name,
+                CountryCode = country,
+                HomePage = s.homePage,
+                ThemeColorCode = s.themeColorCode,
+                ImageSet = s.imageSet != null
+                    ? new ServiceImageSet
+                    {
+                        LightThemeImage = s.imageSet.lightThemeImage,
+                        DarkThemeImage = s.imageSet.darkThemeImage,
+                        WhiteImage = s.imageSet.whiteImage
+                    }
+                    : null
+            });
+            
+            services.AddRange(details);
+        }
+        
+        return services;
+    }
+    
+    public async Task<List<Country>> GetListOfCountries()
+    {
+        string path = "countries";
+        
+        HttpResponseMessage res = await http.GetAsync(path);
+        res.EnsureSuccessStatusCode();
+
+        // Deserialize the response body
+        await using Stream resStream = await res.Content.ReadAsStreamAsync();
+        var servicesByCountry = await JsonSerializer.DeserializeAsync<Dictionary<string, CountryServices>>(resStream);
+        
+        if (servicesByCountry == null)
+            throw new Exception("Failed to deserialize the API response.");
+        
         var countries = new List<Country>();
 
         foreach (var entry in servicesByCountry)
@@ -122,13 +168,10 @@ public class StreamingAvailabilityService(HttpClient http) : IStreamingAvailabil
             });
         }
         
-        if (servicesByCountry == null)
-            throw new Exception("Failed to deserialize the API response.");
-        
         return countries;
     }
 
-    private static CountryStreamingOption[] GetCountryInfoStreamingOption(
+    private static CountryStreamingOption[] ExtractCountryStreamingOption(
                     Dictionary<string, CountryStreamingOption[]> streamingOptions, string countryCode)
     {
         // TODO: maybe handle if there's multiple countries. For now make countryCode mandatory.
@@ -225,7 +268,7 @@ public class StreamingAvailabilityService(HttpClient http) : IStreamingAvailabil
                 ShowId = movieObject.id,
                 GenreId = g.id
             }).ToArray(),
-            StreamingOptions = GetCountryInfoStreamingOption(movieObject.streamingOptions, countryCode)
+            StreamingOptions = ExtractCountryStreamingOption(movieObject.streamingOptions, countryCode)
                 .Select(so =>
                 new StreamingOption
                 {
@@ -310,7 +353,7 @@ public class StreamingAvailabilityService(HttpClient http) : IStreamingAvailabil
                 ShowId = seriesObject.id,
                 GenreId = g.id
             }).ToArray(),
-            StreamingOptions = GetCountryInfoStreamingOption(seriesObject.streamingOptions, countryCode)
+            StreamingOptions = ExtractCountryStreamingOption(seriesObject.streamingOptions, countryCode)
                 .Select(so =>
                 new StreamingOption
                 {

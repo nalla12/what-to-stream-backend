@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
 using WhatToStreamBackend.Models.Db;
+using WhatToStreamBackend.Repositories;
 using WhatToStreamBackend.Services;
 
 var builder = WebApplication.CreateBuilder(args);

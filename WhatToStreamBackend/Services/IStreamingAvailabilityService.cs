@@ -1,5 +1,4 @@
 using WhatToStreamBackend.Models.Db;
-using WhatToStreamBackend.Models.StreamingAvailabilityAPI;
 
 namespace WhatToStreamBackend.Services;
 
@@ -15,6 +14,7 @@ public interface IStreamingAvailabilityService
     );
 
     Task<Show?> GetShowById(string id, string countryCode);
-    
-    Task<List<Country>> GetAllStreamingServicesByCountry();
+
+    Task<List<ServiceDetails>> GetAllStreamingServicesByCountry();
+    Task<List<Country>> GetListOfCountries();
 }

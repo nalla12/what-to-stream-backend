@@ -1,7 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using WhatToStreamBackend.Models.Db;
-using WhatToStreamBackend.Models.StreamingAvailabilityAPI;
+using WhatToStreamBackend.Repositories;
 using WhatToStreamBackend.Services;
 
 namespace WhatToStreamBackend.Controllers;
@@ -56,13 +56,22 @@ public class ImportController(IStreamingAvailabilityService streamingAvailabilit
             return Conflict(new { message = $"A show with ID {id} already exists." });
         }
     }
+
+    [HttpGet]
+    public async Task<ActionResult<List<ServiceDetails>>> GetAllStreamingServicesByCountry()
+    {
+        var serviceList = await streamingAvailabilityService.GetAllStreamingServicesByCountry();
+        await showsDbRepository.AddMultipleServicesAsync(serviceList);
+
+        return Ok(serviceList);
+    }
     
     [HttpGet]
-    public async Task<ActionResult<List<Country>>> GetAllStreamingServicesByCountry()
+    public async Task<ActionResult<List<Country>>> GetListOfCountries()
     {
-        var countriesList = await streamingAvailabilityService.GetAllStreamingServicesByCountry();
+        var countriesList = await streamingAvailabilityService.GetListOfCountries();
         await showsDbRepository.AddMultipleCountriesAsync(countriesList);
 
-        return Ok();
+        return Ok(countriesList);
     }
 }

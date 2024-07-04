@@ -1,7 +1,8 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Query;
+using WhatToStreamBackend.Models.Db;
 
-namespace WhatToStreamBackend.Models.Db;
+namespace WhatToStreamBackend.Repositories;
 
 public class ShowsDbRepository : IShowsDbRepository
 {
@@ -58,11 +59,18 @@ public class ShowsDbRepository : IShowsDbRepository
         return shows.First();
     }
     
-    public async Task<Country> AddMultipleCountriesAsync(IEnumerable<Country> countries)
+    public async Task<ServiceDetails> AddMultipleServicesAsync(List<ServiceDetails> serviceDetails)
+    {
+        _db.ServiceDetails.AddRange(serviceDetails);
+        await _db.SaveChangesAsync();
+        return _db.ServiceDetails.First();
+    }
+    
+    public async Task<Country> AddMultipleCountriesAsync(List<Country> countries)
     {
         _db.Countries.AddRange(countries);
         await _db.SaveChangesAsync();
-        return countries.First();
+        return _db.Countries.First();
     }
 
     public async Task CreateOrUpdateShowAsync(Show show)

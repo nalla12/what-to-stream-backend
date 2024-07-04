@@ -1,4 +1,6 @@
-namespace WhatToStreamBackend.Models.Db;
+using WhatToStreamBackend.Models.Db;
+
+namespace WhatToStreamBackend.Repositories;
 
 public interface IShowsDbRepository
 {
@@ -8,7 +10,8 @@ public interface IShowsDbRepository
     Task<IEnumerable<Show>> GetShowsByGenre(string genre);
     Task<Show> AddShowAsync(Show show);
     Task<Show> AddMultipleShowsAsync(IEnumerable<Show> shows);
-    Task<Country> AddMultipleCountriesAsync(IEnumerable<Country> countries);
+    Task<ServiceDetails> AddMultipleServicesAsync(List<ServiceDetails> serviceDetails);
+    Task<Country> AddMultipleCountriesAsync(List<Country> countries);
     Task UpdateShowAsync(Show show);
     Task<string> DeleteShowAsync(string id); 
 }

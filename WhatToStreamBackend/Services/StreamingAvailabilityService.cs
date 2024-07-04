@@ -43,6 +43,9 @@ public class StreamingAvailabilityService(HttpClient http) : IStreamingAvailabil
 
         // Deserialize the response body
         await using Stream resStream = await res.Content.ReadAsStreamAsync();
+        
+        // TODO: handle pagination
+        // TODO: remove addon from the response
 
         if (showType == "movie")
         {

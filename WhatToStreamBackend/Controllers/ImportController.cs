@@ -11,6 +11,7 @@ namespace WhatToStreamBackend.Controllers;
 public class ImportController(IStreamingAvailabilityService streamingAvailabilityService, IShowsDbRepository showsDbRepository) : ControllerBase
 {
     // Request shows from StreamingAvailability API
+    
     // Get: import/getShowsByFilters
     [HttpGet]
     public async Task<ActionResult<IEnumerable<Show>>> GetShowsByFilters(
@@ -26,9 +27,9 @@ public class ImportController(IStreamingAvailabilityService streamingAvailabilit
             IEnumerable<Show>? filteredShows = await streamingAvailabilityService.GetShowsByFilters(
                 countryCode, showType, ratingMin, ratingMax, keyword, cursor);
             
-            await showsDbRepository.AddMultipleShowsAsync(filteredShows);
+            var showsAddedToDb = await showsDbRepository.AddMultipleShowsAsync(filteredShows);
             
-            return Ok(filteredShows);
+            return Ok(showsAddedToDb);
         }
         catch (Exception e)
         {

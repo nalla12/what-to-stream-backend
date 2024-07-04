@@ -52,11 +52,12 @@ public class ShowsDbRepository : IShowsDbRepository
         return show;
     }
     
-    public async Task<Show> AddMultipleShowsAsync(IEnumerable<Show> shows)
+    public async Task<List<Show>> AddMultipleShowsAsync(IEnumerable<Show> shows)
     {
         _db.Shows.AddRange(shows);
         await _db.SaveChangesAsync();
-        return shows.First();
+        // TODO: only return the added shows
+        return await _completeShows.ToListAsync();
     }
     
     public async Task<ServiceDetails> AddMultipleServicesAsync(List<ServiceDetails> serviceDetails)

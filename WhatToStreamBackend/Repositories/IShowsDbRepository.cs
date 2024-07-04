@@ -9,7 +9,7 @@ public interface IShowsDbRepository
     Task<IEnumerable<Show>> GetShowsByTitle(string title);
     Task<IEnumerable<Show>> GetShowsByGenre(string genre);
     Task<Show> AddShowAsync(Show show);
-    Task<Show> AddMultipleShowsAsync(IEnumerable<Show> shows);
+    Task<List<Show>> AddMultipleShowsAsync(IEnumerable<Show> shows);
     Task<ServiceDetails> AddMultipleServicesAsync(List<ServiceDetails> serviceDetails);
     Task<Country> AddMultipleCountriesAsync(List<Country> countries);
     Task UpdateShowAsync(Show show);

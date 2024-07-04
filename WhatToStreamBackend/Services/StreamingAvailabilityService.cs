@@ -99,7 +99,7 @@ public class StreamingAvailabilityService(HttpClient http) : IStreamingAvailabil
         throw new ArgumentException("Invalid show type");
     }
     
-    public async Task<Dictionary<string, CountryServices>> GetAllStreamingServicesByCountry()
+    public async Task<List<Country>> GetAllStreamingServicesByCountry()
     {
         string path = "countries";
         
@@ -111,10 +111,21 @@ public class StreamingAvailabilityService(HttpClient http) : IStreamingAvailabil
         await using Stream resStream = await res.Content.ReadAsStreamAsync();
         var servicesByCountry = await JsonSerializer.DeserializeAsync<Dictionary<string, CountryServices>>(resStream);
 
+        var countries = new List<Country>();
+
+        foreach (var entry in servicesByCountry)
+        {
+            countries.Add(new Country
+            {
+                CountryCode = entry.Key,
+                Name = entry.Value.name
+            });
+        }
+        
         if (servicesByCountry == null)
             throw new Exception("Failed to deserialize the API response.");
         
-        return servicesByCountry;
+        return countries;
     }
 
     private static CountryStreamingOption[] GetCountryInfoStreamingOption(

@@ -8,6 +8,7 @@ public interface IShowsDbRepository
     Task<IEnumerable<Show>> GetShowsByGenre(string genre);
     Task<Show> AddShowAsync(Show show);
     Task<Show> AddMultipleShowsAsync(IEnumerable<Show> shows);
+    Task<Country> AddMultipleCountriesAsync(IEnumerable<Country> countries);
     Task UpdateShowAsync(Show show);
     Task<string> DeleteShowAsync(string id); 
 }

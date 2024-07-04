@@ -13,5 +13,5 @@ public class Country
     public string? Name { get; set; }
     
     [JsonIgnore]
-    public ICollection<StreamingOption> StreamingOptions { get; set; } = new List<StreamingOption>();
+    public ICollection<StreamingOption>? StreamingOptions { get; set; } = new List<StreamingOption>();
 }

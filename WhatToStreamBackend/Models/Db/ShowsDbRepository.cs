@@ -57,6 +57,13 @@ public class ShowsDbRepository : IShowsDbRepository
         await _db.SaveChangesAsync();
         return shows.First();
     }
+    
+    public async Task<Country> AddMultipleCountriesAsync(IEnumerable<Country> countries)
+    {
+        _db.Countries.AddRange(countries);
+        await _db.SaveChangesAsync();
+        return countries.First();
+    }
 
     public async Task CreateOrUpdateShowAsync(Show show)
     {

@@ -16,5 +16,5 @@ public interface IStreamingAvailabilityService
 
     Task<Show?> GetShowById(string id, string countryCode);
     
-    Task<Dictionary<string, CountryServices>> GetAllStreamingServicesByCountry();
+    Task<List<Country>> GetAllStreamingServicesByCountry();
 }

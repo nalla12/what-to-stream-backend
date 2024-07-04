@@ -58,8 +58,11 @@ public class ImportController(IStreamingAvailabilityService streamingAvailabilit
     }
     
     [HttpGet]
-    public async Task<ActionResult<Dictionary<string, CountryServices>>> GetAllStreamingServicesByCountry()
+    public async Task<ActionResult<List<Country>>> GetAllStreamingServicesByCountry()
     {
-        return await streamingAvailabilityService.GetAllStreamingServicesByCountry();
+        var countriesList = await streamingAvailabilityService.GetAllStreamingServicesByCountry();
+        await showsDbRepository.AddMultipleCountriesAsync(countriesList);
+
+        return Ok();
     }
 }

@@ -47,7 +47,7 @@ public class ShowsDbContext : DbContext
         modelBuilder.Entity<StreamingOption>()
             .HasOne(so => so.ServiceDetails)
             .WithMany(g => g.StreamingOptions)
-            .HasForeignKey(so => new{so.ServiceId, so.CountryCode});
+            .HasForeignKey(so => new{so.ServiceId, so.CountryId});
         
         // Seed data
         /*modelBuilder.Entity<Show>().HasData(

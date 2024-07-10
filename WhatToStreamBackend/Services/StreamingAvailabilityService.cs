@@ -45,7 +45,7 @@ public class StreamingAvailabilityService(HttpClient http) : IStreamingAvailabil
         await using Stream resStream = await res.Content.ReadAsStreamAsync();
         
         // TODO: handle pagination
-        // TODO: remove addon from the response
+        // TODO: remove addon from the response so they are not imported to the Db
 
         if (showType == "movie")
         {
@@ -277,7 +277,7 @@ public class StreamingAvailabilityService(HttpClient http) : IStreamingAvailabil
                 {
                     ShowId = movieObject.id,
                     ServiceId = so.service.id,
-                    CountryCode = countryCode,
+                    CountryId = countryCode,
                     Type = so.type,
                     Link = so.link,
                     VideoLink = so.videoLink,
@@ -362,7 +362,7 @@ public class StreamingAvailabilityService(HttpClient http) : IStreamingAvailabil
                 {
                     ShowId = seriesObject.id,
                     ServiceId = so.service.id,
-                    CountryCode = countryCode,
+                    CountryId = countryCode,
                     Type = so.type,
                     Link = so.link,
                     VideoLink = so.videoLink,

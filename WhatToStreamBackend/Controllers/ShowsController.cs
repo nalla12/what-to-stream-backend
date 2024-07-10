@@ -95,6 +95,19 @@ namespace WhatToStreamBackend.Controllers
             
             return Ok($"Show with Id: {id} has been deleted.");
         }
+        
+        // DELETE: api/Shows
+        [HttpDelete]
+        public async Task<IActionResult> DeleteAllShows(string check)
+        {
+            if (check != "delete all shows")
+            {
+                return BadRequest("Please provide the correct query parameter to delete all shows.");
+            }
+            
+            string deleteResult = await showsDbRepository.DeleteAllShowsAsync();
+            return Ok(deleteResult);
+        }
 
         private async Task<bool> ShowExists(string id)
         {

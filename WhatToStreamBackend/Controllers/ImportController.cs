@@ -10,11 +10,11 @@ namespace WhatToStreamBackend.Controllers;
 [ApiController]
 public class ImportController(IStreamingAvailabilityService streamingAvailabilityService, IShowsDbRepository showsDbRepository) : ControllerBase
 {
-    // Request shows from StreamingAvailability API
+    // Request and import shows from StreamingAvailability API
     
-    // Get: import/getShowsByFilters
+    // Get: import/ShowsByFilters
     [HttpGet]
-    public async Task<ActionResult<IEnumerable<Show>>> GetShowsByFilters(
+    public async Task<ActionResult<IEnumerable<Show>>> ShowsByFilters(
         [FromQuery] string countryCode,
         [FromQuery] string showType,
         [FromQuery] int? ratingMin,
@@ -38,9 +38,9 @@ public class ImportController(IStreamingAvailabilityService streamingAvailabilit
         }
     }
     
-    // Get: import/getShowById/:id
+    // Get: import/ShowById/:id
     [HttpGet("{id}")]
-    public async Task<ActionResult<Show>> GetShowById(
+    public async Task<ActionResult<Show>> ShowById(
         string id, [FromQuery] string countryCode)
     {
         try
@@ -49,7 +49,7 @@ public class ImportController(IStreamingAvailabilityService streamingAvailabilit
             
             await showsDbRepository.AddShowAsync(showById);
             
-            return CreatedAtAction(nameof(GetShowById), new { id = showById.Id }, showById);
+            return CreatedAtAction(nameof(ShowById), new { id = showById.Id }, showById);
         }
         catch (DbUpdateException ex) when (ex.InnerException?.Message.Contains("duplicate key") == true)
         {
@@ -59,7 +59,7 @@ public class ImportController(IStreamingAvailabilityService streamingAvailabilit
     }
 
     [HttpGet]
-    public async Task<ActionResult<List<ServiceDetails>>> GetAllStreamingServicesByCountry()
+    public async Task<ActionResult<List<ServiceDetails>>> AllStreamingServicesByCountry()
     {
         var serviceList = await streamingAvailabilityService.GetAllStreamingServicesByCountry();
         await showsDbRepository.AddMultipleServicesAsync(serviceList);
@@ -68,7 +68,7 @@ public class ImportController(IStreamingAvailabilityService streamingAvailabilit
     }
     
     [HttpGet]
-    public async Task<ActionResult<List<Country>>> GetListOfCountries()
+    public async Task<ActionResult<List<Country>>> ListOfCountries()
     {
         var countriesList = await streamingAvailabilityService.GetListOfCountries();
         await showsDbRepository.AddMultipleCountriesAsync(countriesList);

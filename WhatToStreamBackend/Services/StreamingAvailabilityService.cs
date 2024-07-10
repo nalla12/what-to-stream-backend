@@ -174,13 +174,13 @@ public class StreamingAvailabilityService(HttpClient http) : IStreamingAvailabil
         return countries;
     }
 
+    // TODO: maybe handle if there's multiple countries. For now make countryCode mandatory.
     private static CountryStreamingOption[] ExtractCountryStreamingOption(
                     Dictionary<string, CountryStreamingOption[]> streamingOptions, string countryCode)
     {
-        // TODO: maybe handle if there's multiple countries. For now make countryCode mandatory.
         if (streamingOptions.TryGetValue(countryCode, out CountryStreamingOption[] cso))
         {
-            return cso;
+            return cso.Where(option => option.type != "addon").ToArray();
         }
 
         return [];

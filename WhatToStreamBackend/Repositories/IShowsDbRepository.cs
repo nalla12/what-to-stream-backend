@@ -13,5 +13,7 @@ public interface IShowsDbRepository
     Task<ServiceDetails> AddMultipleServicesAsync(List<ServiceDetails> serviceDetails);
     Task<Country> AddMultipleCountriesAsync(List<Country> countries);
     Task UpdateShowAsync(Show show);
-    Task<string> DeleteShowAsync(string id); 
+    Task<string> DeleteShowAsync(string id);
+    Task<string> DeleteAllShowsAsync();
+    
 }

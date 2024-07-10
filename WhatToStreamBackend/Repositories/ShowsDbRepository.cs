@@ -144,4 +144,49 @@ public class ShowsDbRepository : IShowsDbRepository
 
         return "Not found";
     }
+    
+    public async Task<string> DeleteAllShowsAsync()
+    {
+        // Retrieve the show including related entities
+        var shows = await _db.Shows
+            .Include(s => s.ShowGenres)
+            .Include(s => s.StreamingOptions)
+            .Include(s => s.ImageSet)
+            .ThenInclude(i => i.VerticalPoster)
+            .Include(s => s.ImageSet)
+            .ThenInclude(i => i.HorizontalPoster)
+            .Include(s => s.ImageSet)
+            .ThenInclude(i => i.VerticalBackdrop)
+            .Include(s => s.ImageSet)
+            .ThenInclude(i => i.HorizontalBackdrop)
+            .ToListAsync();
+
+        foreach (var show in shows)
+        {
+            _db.ShowGenres.RemoveRange(show.ShowGenres);
+            _db.StreamingOptions.RemoveRange(show.StreamingOptions);
+
+            if (show.ImageSet != null)
+            {
+                if (show.ImageSet.VerticalPoster != null)
+                    _db.VerticalImages.Remove(show.ImageSet.VerticalPoster);
+                if (show.ImageSet.HorizontalPoster != null)
+                    _db.HorizontalImages.Remove(show.ImageSet.HorizontalPoster);
+                if (show.ImageSet.VerticalBackdrop != null)
+                    _db.VerticalImages.Remove(show.ImageSet.VerticalBackdrop);
+                if (show.ImageSet.HorizontalBackdrop != null)
+                    _db.HorizontalImages.Remove(show.ImageSet.HorizontalBackdrop);
+
+                _db.ShowImageSets.Remove(show.ImageSet);
+            }
+
+        }
+        
+        // Finally remove all shows
+        _db.Shows.RemoveRange(shows);
+
+        await _db.SaveChangesAsync();
+        
+        return $"All shows deleted successfully";
+    }
 }

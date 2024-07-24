@@ -54,6 +54,7 @@ public class ShowsDbRepository : IShowsDbRepository
     
     public async Task<List<Show>> AddMultipleShowsAsync(IEnumerable<Show> shows)
     {
+        // TODO: handle if the shows already exist in the database
         _db.Shows.AddRange(shows);
         await _db.SaveChangesAsync();
         // TODO: only return the added shows

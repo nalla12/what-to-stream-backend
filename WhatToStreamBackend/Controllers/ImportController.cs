@@ -20,12 +20,13 @@ public class ImportController(IStreamingAvailabilityService streamingAvailabilit
         [FromQuery] int? ratingMin,
         [FromQuery] int? ratingMax,
         [FromQuery] string? keyword,
-        [FromQuery] string? cursor)
+        [FromQuery] string? cursor,
+        [FromQuery] int? pages)
     {
         try
         {
             IEnumerable<Show>? filteredShows = await streamingAvailabilityService.GetShowsByFilters(
-                countryCode, showType, ratingMin, ratingMax, keyword, cursor);
+                countryCode, showType, ratingMin, ratingMax, keyword, cursor, pages);
             
             var showsAddedToDb = await showsDbRepository.AddMultipleShowsAsync(filteredShows);
             

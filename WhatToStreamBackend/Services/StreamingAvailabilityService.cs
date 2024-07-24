@@ -14,58 +14,60 @@ public class StreamingAvailabilityService(HttpClient http) : IStreamingAvailabil
         int? ratingMin = null,
         int? ratingMax = null,
         string? keyword = null,
-        string? cursor = null
+        string? cursor = null,
+        int? pages = 1
     )
     {
-        string path = "shows/search/filters";
-        
-        NameValueCollection query = HttpUtility.ParseQueryString(string.Empty);
-
-        // Construct query string
-            query["country"] = countryCode;
-            query["show_type"] = showType;
-
-        if (ratingMin.HasValue)
-            query["rating_min"] = ratingMin.Value.ToString();
-
-        if (ratingMax.HasValue)
-            query["rating_max"] = ratingMax.Value.ToString();
-
-        if (!string.IsNullOrEmpty(keyword))
-            query["keyword"] = keyword;
-
-        if (!string.IsNullOrEmpty(cursor))
-            query["cursor"] = cursor;
-
-        // The GET request response
-        HttpResponseMessage res = await http.GetAsync($"{path}?{query}");
-        res.EnsureSuccessStatusCode();
-
-        // Deserialize the response body
-        await using Stream resStream = await res.Content.ReadAsStreamAsync();
-        
-        // TODO: handle pagination
-        // TODO: remove addon from the response so they are not imported to the Db
-
-        if (showType == "movie")
+        if (showType != "movie" && showType != "series")
         {
-            var movieResults = await JsonSerializer
-                .DeserializeAsync<ShowsByFiltersResult<ShowsMovie>>(resStream);
-            
-            return movieResults.Shows.Select(s => 
-                MapDbShowFromMovieObject(s, countryCode)).ToArray();
-        } 
-        
-        if (showType == "series")
-        {
-            var seriesResults = await JsonSerializer
-                .DeserializeAsync<ShowsByFiltersResult<ShowsSeries>>(resStream);
-            
-            return seriesResults.Shows.Select(s => 
-                MapDbShowFromSeriesObject(s, countryCode)).ToArray();
+            throw new ArgumentException("Invalid showType. Must be either 'movie' or 'series'.", nameof(showType));
         }
         
-        throw new ArgumentException("Invalid show type");
+        List<Show> allShows = new List<Show>();
+        string path = "shows/search/filters";
+        bool hasMore = true;
+        int currentPage = 0;
+
+        while (hasMore && currentPage < pages)
+        {
+            NameValueCollection query = HttpUtility.ParseQueryString(string.Empty);
+            query["country"] = countryCode;
+            query["show_type"] = showType;
+            if (ratingMin.HasValue) query["rating_min"] = ratingMin.Value.ToString();
+            if (ratingMax.HasValue) query["rating_max"] = ratingMax.Value.ToString();
+            if (!string.IsNullOrEmpty(keyword)) query["keyword"] = keyword;
+            if (!string.IsNullOrEmpty(cursor)) query["cursor"] = cursor;
+
+            HttpResponseMessage res = await http.GetAsync($"{path}?{query}");
+            res.EnsureSuccessStatusCode();
+            await using Stream resStream = await res.Content.ReadAsStreamAsync();
+
+            ShowsByFiltersResult<ShowsMovie>? movieResult = null;
+            ShowsByFiltersResult<ShowsSeries>? seriesResult = null;
+
+            if (showType == "movie")
+            {
+                movieResult = await JsonSerializer.DeserializeAsync<ShowsByFiltersResult<ShowsMovie>>(resStream);
+                if (movieResult == null) throw new Exception("Failed to deserialize the API response.");
+    
+                var shows = movieResult.Shows.Select(s => MapDbShowFromMovieObject(s, countryCode)).ToArray();
+                allShows.AddRange(shows);
+            }
+            else if (showType == "series")
+            {
+                seriesResult = await JsonSerializer.DeserializeAsync<ShowsByFiltersResult<ShowsSeries>>(resStream);
+                if (seriesResult == null) throw new Exception("Failed to deserialize the API response.");
+    
+                var shows = seriesResult.Shows.Select(s => MapDbShowFromSeriesObject(s, countryCode)).ToArray();
+                allShows.AddRange(shows);
+            }
+
+            hasMore = (movieResult?.HasMore ?? seriesResult?.HasMore) ?? false;
+            cursor = movieResult?.NextCursor ?? seriesResult?.NextCursor;
+            currentPage++;
+        }
+
+        return allShows;
     }
 
     public async Task<Show?> GetShowById(string id, string countryCode)
@@ -174,12 +176,13 @@ public class StreamingAvailabilityService(HttpClient http) : IStreamingAvailabil
         return countries;
     }
 
-    // TODO: maybe handle if there's multiple countries. For now make countryCode mandatory.
+    // Maybe handle if there's multiple countries. For now make countryCode mandatory.
     private static CountryStreamingOption[] ExtractCountryStreamingOption(
                     Dictionary<string, CountryStreamingOption[]> streamingOptions, string countryCode)
     {
         if (streamingOptions.TryGetValue(countryCode, out CountryStreamingOption[] cso))
         {
+            // Filter out the "addon" type to simplify the data.
             return cso.Where(option => option.type != "addon").ToArray();
         }
 

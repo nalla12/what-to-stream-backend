@@ -10,7 +10,8 @@ public interface IStreamingAvailabilityService
         int? ratingMin,
         int? ratingMax,
         string? keyword,
-        string? cursor
+        string? cursor,
+        int? pages
     );
 
     Task<Show?> GetShowById(string id, string countryCode);
